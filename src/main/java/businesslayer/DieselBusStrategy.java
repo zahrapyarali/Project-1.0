@@ -1,13 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package businesslayer;
 
-/**
- *
- * @author Dell
- */
-public class DieselBusStrategy {
-    
+public class DieselBusStrategy implements FuelConsumptionStrategy {
+
+    @Override
+    public double calculateConsumption(double distance) {
+        // Example: Diesel bus consumes 0.2 liters per km
+        double consumptionRate = 0.2; // Liters per km
+        return distance * consumptionRate;
+    }
 }

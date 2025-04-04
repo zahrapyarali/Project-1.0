@@ -8,6 +8,8 @@ package businesslayer;
  *
  * @author Dell
  */
-public class FuelConsumptionStrategy {
-    
+
+
+public interface FuelConsumptionStrategy {
+    double calculateConsumption(double distance);
 }

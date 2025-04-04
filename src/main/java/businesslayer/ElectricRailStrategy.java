@@ -1,13 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package businesslayer;
 
-/**
- *
- * @author Dell
- */
-public class ElectricRailStrategy {
-    
+public class ElectricRailStrategy implements FuelConsumptionStrategy {
+
+    @Override
+    public double calculateConsumption(double distance) {
+        // Example: Electric rail consumes 0.5 kWh per km
+        double consumptionRate = 0.5; // kWh per km
+        return distance * consumptionRate;
+    }
 }

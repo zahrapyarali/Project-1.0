@@ -11,6 +11,10 @@ public class VehicleDAO implements DAO<Vehicle> {
         this.conn = conn;
     }
 
+    VehicleDAO() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     @Override
     public void insert(Vehicle vehicle) {
         String sql = "INSERT INTO vehicle (type, number, fuelType, maxPassengers, currentAssignedRoute, manager_id) VALUES (?, ?, ?, ?, ?, ?)";
