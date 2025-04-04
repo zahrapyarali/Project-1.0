@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * LoginServlet servlet acts as a central controller for handling all author-related actions.
+ * LoginServlet servlet acts as a central controller for handling all login-related actions.
  * Supports login (database credentials) and dynamically generates HTML views.
  * Author: Ambika
  * This servlet follows a Front Controller pattern with action-based dispatching.
@@ -52,8 +52,7 @@ public class LoginServlet extends HttpServlet {
                 "<label>Password:</label><input type='password' name='dbPass'/><br/>" +
                 "<input type='hidden' name='action' value='authenticate'/>" +
                 "<button type='submit'>Login</button>" +
-                "</form>" +
-                generateActionButtons());
+                "</form>");
         sendResponse(resp, html);
     }
 
@@ -71,8 +70,7 @@ public class LoginServlet extends HttpServlet {
                     "<label>Password:</label><input type='password' name='dbPass'/><br/>" +
                     "<input type='hidden' name='action' value='authenticate'/>" +
                     "<button type='submit'>Login</button>" +
-                    "</form>" +
-                    generateActionButtons());
+                    "</form>" );
             sendResponse(resp, html);
         } catch (SQLException e) {
             String html = generateHtml("Enter DBMS Credentials", "<h1>Enter DBMS Credentials</h1>" +
@@ -82,8 +80,7 @@ public class LoginServlet extends HttpServlet {
                     "<label>Password:</label><input type='password' name='dbPass'/><br/>" +
                     "<input type='hidden' name='action' value='authenticate'/>" +
                     "<button type='submit'>Login</button>" +
-                    "</form>" +
-                    generateActionButtons());
+                    "</form>" );
             sendResponse(resp, html);
         }
     }
@@ -104,20 +101,6 @@ public class LoginServlet extends HttpServlet {
                 "</style></head><body><div class='container'>" + content + "</div></body></html>";
     }
 
-    private String generateActionButtons() {
-        return "<div class='buttons'>" +
-                "<form action='Controller' method='get' style='display:inline;'>" +
-                "<button name='action' value='getAllAuthors'>GetAllAuthors</button></form>" +
-                "<form action='Controller' method='get' style='display:inline;'>" +
-                "<button name='action' value='showGetAuthorByIdForm'>GetAuthorByAuthorId</button></form>" +
-                "<form action='Controller' method='get' style='display:inline;'>" +
-                "<button name='action' value='addAuthor'>AddAuthor</button></form>" +
-                "<form action='Controller' method='get' style='display:inline;'>" +
-                "<button name='action' value='updateAuthor'>UpdateAuthorById</button></form>" +
-                "<form action='Controller' method='get' style='display:inline;'>" +
-                "<button name='action' value='deleteAuthor'>DeleteAuthorById</button></form>" +
-                "</div>";
-    }
 
     private void sendResponse(HttpServletResponse resp, String html) throws IOException {
         resp.setContentType("text/html;charset=UTF-8");
