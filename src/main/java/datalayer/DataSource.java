@@ -14,11 +14,10 @@ public class DataSource {
     private static DataSource instance;
 
     // JDBC URL for the MySQL database
-    private final String url = "jdbc:mysql://localhost:3306/ptfms_db";
+    private final String url = "jdbc:mysql://localhost:3306/public_transit_db";
 
     // Database credentials
     private String user, password;
-
     /**
      * Private constructor to prevent direct instantiation.
      * Use getInstance() to obtain the singleton object.
