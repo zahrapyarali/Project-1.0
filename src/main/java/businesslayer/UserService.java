@@ -9,7 +9,8 @@ public class UserService {
     private final UserDAO userDAO;
 
     public UserService() {
-        this.userDAO = DAOFactory.getUserDAO();
+        // Initialize UserDAO from DAOFactory
+        this.userDAO = (UserDAO) DAOFactory.getDAO("user");
     }
 
     public boolean registerUser(String name, String email, String password, String role) {
@@ -17,17 +18,29 @@ public class UserService {
             return false;
         }
 
-        // Match this constructor to the one in your User class
+        // Create a new user instance
         User user = new User(name, email, password, role);
 
-        return userDAO.insert(user);
+        try {
+            // Insert the user into the database
+            userDAO.insert(user);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;  // Return false in case of an error
+        }
     }
 
     public User authenticate(String email, String password) {
-        User user = userDAO.findByEmail(email);
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
+        try {
+            // Retrieve user by email
+            User user = userDAO.findByEmail(email);
+            if (user != null && user.getPassword().equals(password)) {
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
+        return null;  // Return null if authentication fails
     }
 }

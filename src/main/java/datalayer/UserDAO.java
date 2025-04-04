@@ -11,6 +11,10 @@ public class UserDAO implements DAO<User> {
         this.conn = conn;
     }
 
+    UserDAO() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     @Override
     public void insert(User user) {
         String sql = "INSERT INTO user (name, email, password, role) VALUES (?, ?, ?, ?)";
@@ -91,5 +95,24 @@ public class UserDAO implements DAO<User> {
             e.printStackTrace();
         }
         return users;
+    }
+    public User findByEmail(String email) {
+        String sql = "SELECT * FROM user WHERE email=?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("user_id"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("role")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

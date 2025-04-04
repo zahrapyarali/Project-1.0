@@ -7,16 +7,16 @@ public class User {
     private String password;
     private String role;
 
-    public User(int userId, String name, String email, String password, String role) {
-        this.userId = userId;
+    public User(String name, String email, String password, String role) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
-    // Overloaded constructor without ID (for inserts)
-    public User(String name, String email, String password, String role) {
+    // Constructor with userId for fetching from DB
+    public User(int userId, String name, String email, String password, String role) {
+        this.userId = userId;
         this.name = name;
         this.email = email;
         this.password = password;
