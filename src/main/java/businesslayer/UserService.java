@@ -1,5 +1,6 @@
 package businesslayer;
 
+import datalayer.DAOFactory;
 import datalayer.User;
 import datalayer.UserDAO;
 
