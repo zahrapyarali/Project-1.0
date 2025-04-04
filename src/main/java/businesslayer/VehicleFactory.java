@@ -1,13 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package businesslayer;
 
-/**
- *
- * @author Dell
- */
+import datalayer.Vehicle;
+
 public class VehicleFactory {
-    
+
+    // Method to create a vehicle based on the type and provided details
+    public Vehicle createVehicle(String type, String number, String fuelType, int maxPassengers, String currentAssignedRoute) {
+        Vehicle vehicle = new Vehicle();
+        vehicle.setType(type);
+        vehicle.setNumber(number);
+        vehicle.setFuelType(fuelType);
+        vehicle.setMaxPassengers(maxPassengers);
+        vehicle.setCurrentAssignedRoute(currentAssignedRoute);
+        
+        return vehicle;
+    }
 }

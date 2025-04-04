@@ -6,8 +6,9 @@ package businesslayer;
 
 /**
  *
- * @author Dell
+ * @author drder
  */
-public class MaintenanceObserver {
+public interface MaintenanceObserver {
+    void update(double wearLevel);
     
 }

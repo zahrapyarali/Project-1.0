@@ -8,7 +8,8 @@ public class Vehicle {
     private int maxPassengers;
     private String currentAssignedRoute;
     private int managerId; // FK to User
-
+    
+    public Vehicle(){};
     public Vehicle(int id, String type, String number, String fuelType, int maxPassengers, String currentAssignedRoute, int managerId) {
         this.id = id;
         this.type = type;
