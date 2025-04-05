@@ -60,25 +60,30 @@
             }
 
             // Query the database for all GPS records for the given vehicleId
-            List<GPSTracking> gpsList = new ArrayList<>();
-            String sql = "SELECT tracking_id, vehicle_id, latitude, longitude, location, timestamp FROM gps_data WHERE vehicle_id = ? ORDER BY timestamp DESC";
-            try (Connection con = DataSource.getInstance().getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-                pstmt.setInt(1, vehicleId);
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    while (rs.next()) {
-                        GPSTracking gps = new GPSTracking();
-                        gps.setTrackingId(rs.getInt("tracking_id"));
-                        gps.setVehicleId(rs.getInt("vehicle_id"));
-                        gps.setLatitude(rs.getDouble("latitude"));
-                        gps.setLongitude(rs.getDouble("longitude"));
-                        gps.setLocation(rs.getString("location"));
-                        gps.setTimestamp(rs.getTimestamp("timestamp").toLocalDateTime());
-                        gpsList.add(gps);
-                    }
-                }
-            } catch (SQLException e) {
-                out.println("Error retrieving GPS data: " + e.getMessage());
+           List<GPSTracking> gpsList = new ArrayList<>();
+String sql = "SELECT tracking_id, vehicle_id, latitude, longitude, location, timestamp FROM gps_data WHERE vehicle_id = ? ORDER BY timestamp DESC";
+try {
+    // Using DataSource to get a connection
+    Connection con = DataSource.getInstance().createConnection();
+    try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+        pstmt.setInt(1, vehicleId);
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                GPSTracking gps = new GPSTracking();
+                gps.setTrackingId(rs.getInt("tracking_id"));
+                gps.setVehicleId(rs.getInt("vehicle_id"));
+                gps.setLatitude(rs.getDouble("latitude"));
+                gps.setLongitude(rs.getDouble("longitude"));
+                gps.setLocation(rs.getString("location"));
+                gps.setTimestamp(rs.getTimestamp("timestamp").toLocalDateTime());
+                gpsList.add(gps);
             }
+        }
+    }
+} catch (SQLException e) {
+    out.println("Error retrieving GPS data: " + e.getMessage());
+}
+
         %>
 
         <h2>GPS Data for Vehicle ID: <%= vehicleId %></h2>
