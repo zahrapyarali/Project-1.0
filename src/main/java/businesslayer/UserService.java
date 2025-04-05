@@ -1,6 +1,7 @@
 package businesslayer;
 
 import datalayer.DAOFactory;
+import datalayer.DataSource;
 import datalayer.User;
 import datalayer.UserDAO;
 import java.sql.Connection;
@@ -14,15 +15,23 @@ public class UserService {
     
 
     public UserService() throws SQLException {
-        Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/your_db", "username", "password"
-        );
-        DAOFactory factory = new DAOFactory(conn);
+    // Set database credentials before establishing the connection
+    DataSource.getInstance().setCredentials("your-username", "your-password");
+
+    // Get the connection from the DataSource
+    try (Connection conn = DataSource.getInstance().createConnection()) {
+
+        // Create the DAOFactory without passing a connection to the constructor
+        DAOFactory factory = new DAOFactory();
+
+        // Instantiate the UserDAO using the DAOFactory
         this.userDAO = (UserDAO) factory.getDAO("user");
+    } catch (SQLException e) {
+        // Handle the exception, or rethrow if necessary
+        throw new SQLException("Error establishing a connection to the database", e);
     }
+}
 
-
-    // ... authenticate and registerUser methods unchanged
 
 
     public boolean registerUser(String name, String email, String password, String role) {
