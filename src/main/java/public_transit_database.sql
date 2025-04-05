@@ -1,11 +1,13 @@
 -- Create the database if it doesn't exist
+DROP DATABASE IF EXISTS public_transit_db;
+
 CREATE DATABASE IF NOT EXISTS public_transit_db;
 
 -- Switch to using the newly created database
 USE public_transit_db;
 
 -- Create users table to store system users
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
