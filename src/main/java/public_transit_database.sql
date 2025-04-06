@@ -7,7 +7,7 @@ CREATE DATABASE IF NOT EXISTS public_transit_db;
 USE public_transit_db;
 
 -- Create users table to store system users
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -42,3 +42,4 @@ CREATE TABLE IF NOT EXISTS vehicles (
         (vehicleType = 'Diesel-Electric Train' AND maxPassengers BETWEEN 100 AND 500)
     )
 );
+INSERT INTO users (name, email, password, role) VALUES ("Ambika","ambika@example.com", "ambika", "Manager");
