@@ -77,18 +77,15 @@ CREATE TABLE IF NOT EXISTS vehicles (
 );
 
 CREATE TABLE IF NOT EXISTS break_logs (
-
     log_id INT AUTO_INCREMENT PRIMARY KEY,
-
+    operator_id INT NOT NULL,
     vehicle_id INT NOT NULL,
-
-    status ENUM('Break', 'Out-of-Service') NOT NULL,
-
+    status ENUM('Check-In', 'Check-Out', 'Out-of-Service') NOT NULL,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-
+    FOREIGN KEY (operator_id) REFERENCES user(id),
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicleId)
-
 );
+
  
 -- Sample manager
 
@@ -176,39 +173,24 @@ INSERT INTO gps_data (vehicle_id, location, timestamp, status) VALUES
  
 -- Diesel Bus (vehicleId = 1)
 
-INSERT INTO break_logs (vehicle_id, status, timestamp)
-
+-- Diesel Bus (vehicleId = 1)
+INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp)
 VALUES 
+(2, 1, 'Check-In', '2025-04-06 08:30:00'),
+(2, 1, 'Out-of-Service', '2025-04-06 14:00:00');
 
-(1, 'Break', '2025-04-06 08:30:00'),
-
-(1, 'Out-of-Service', '2025-04-06 14:00:00');
- 
 -- Diesel Bus (CNG, vehicleId = 2)
-
-INSERT INTO break_logs (vehicle_id, status, timestamp)
-
+INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp)
 VALUES 
+(2, 2, 'Check-In', '2025-04-06 09:40:00');
 
-(2, 'Break', '2025-04-06 09:40:00');
- 
 -- Electric Light Rail (vehicleId = 3)
-
-INSERT INTO break_logs (vehicle_id, status, timestamp)
-
+INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp)
 VALUES 
+(2, 3, 'Out-of-Service', '2025-04-06 11:00:00');
 
-(3, 'Out-of-Service', '2025-04-06 11:00:00');
- 
 -- Diesel-Electric Train (vehicleId = 4)
-
-INSERT INTO break_logs (vehicle_id, status, timestamp)
-
+INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp)
 VALUES 
-
-(4, 'Break', '2025-04-06 12:30:00'),
-
-(4, 'Out-of-Service', '2025-04-06 18:00:00');
- 
- 
- 
+(2, 4, 'Check-In', '2025-04-06 12:30:00'),
+(2, 4, 'Out-of-Service', '2025-04-06 18:00:00');

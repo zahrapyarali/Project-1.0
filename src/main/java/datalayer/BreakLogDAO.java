@@ -13,14 +13,14 @@ public class BreakLogDAO {
         this.conn = conn;
     }
 
-    // Save a complete BreakLog
+    // Save complete log manually (if needed)
     public void save(BreakLog breakLog) {
-        String sql = "INSERT INTO break_logs (operator_id, vehicle_id, break_start, break_end) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, breakLog.getOperatorId());
             stmt.setInt(2, breakLog.getVehicleId());
-            stmt.setTimestamp(3, Timestamp.valueOf(breakLog.getBreakStart()));
-            stmt.setTimestamp(4, Timestamp.valueOf(breakLog.getBreakEnd()));
+            stmt.setString(3, breakLog.getStatus());
+            stmt.setTimestamp(4, Timestamp.valueOf(breakLog.getTimestamp()));
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error saving break log: " + e.getMessage());
@@ -28,13 +28,14 @@ public class BreakLogDAO {
         }
     }
 
-    // Start break: inserts a row with NULL break_end
-    public void startBreak(int operatorId, int vehicleId, LocalDateTime breakStart) {
-        String sql = "INSERT INTO break_logs (operator_id, vehicle_id, break_start, break_end) VALUES (?, ?, ?, NULL)";
+    // Start break with status = "Break"
+    public void startBreak(int operatorId, int vehicleId, LocalDateTime time) {
+        String sql = "INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, operatorId);
             stmt.setInt(2, vehicleId);
-            stmt.setTimestamp(3, Timestamp.valueOf(breakStart));
+            stmt.setString(3, "Check-In");
+            stmt.setTimestamp(4, Timestamp.valueOf(time));
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error starting break: " + e.getMessage());
@@ -42,43 +43,44 @@ public class BreakLogDAO {
         }
     }
 
-    // End break: updates the latest row for this user & vehicle where break_end is NULL
-    public void endBreak(int operatorId, int vehicleId, LocalDateTime breakEnd) {
-        String sql = "UPDATE break_logs SET break_end = ? WHERE operator_id = ? AND vehicle_id = ? AND break_end IS NULL ORDER BY break_start DESC LIMIT 1";
+    // End break with status = "Out-of-Service"
+    public void endBreak(int operatorId, int vehicleId, LocalDateTime time) {
+        String sql = "INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setTimestamp(1, Timestamp.valueOf(breakEnd));
-            stmt.setInt(2, operatorId);
-            stmt.setInt(3, vehicleId);
+            stmt.setInt(1, operatorId);
+            stmt.setInt(2, vehicleId);
+            stmt.setString(3, "Check-Out");
+            stmt.setTimestamp(4, Timestamp.valueOf(time));
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error ending break: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
-    // Find a BreakLog by its ID
+    
     public BreakLog findById(int id) {
-        String sql = "SELECT * FROM break_logs WHERE log_id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new BreakLog(
-                    rs.getInt("log_id"),
-                    rs.getInt("operator_id"),
-                    rs.getInt("vehicle_id"),
-                    rs.getTimestamp("break_start").toLocalDateTime(),
-                    rs.getTimestamp("break_end") != null ? rs.getTimestamp("break_end").toLocalDateTime() : null
-                );
-            }
-        } catch (SQLException e) {
-            System.err.println("Error fetching break log by ID: " + e.getMessage());
-            e.printStackTrace();
+    String sql = "SELECT * FROM break_logs WHERE log_id = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return new BreakLog(
+                rs.getInt("log_id"),
+                rs.getInt("operator_id"),
+                rs.getInt("vehicle_id"),
+                rs.getString("status"),
+                rs.getTimestamp("timestamp").toLocalDateTime()
+            );
         }
-        return null;
+    } catch (SQLException e) {
+        System.err.println("Error fetching break log by ID: " + e.getMessage());
+        e.printStackTrace();
     }
+    return null;
+}
 
-    // Get all BreakLogs
+
+    // Get all logs
     public List<BreakLog> findAll() {
         List<BreakLog> breakLogs = new ArrayList<>();
         String sql = "SELECT * FROM break_logs";
@@ -89,8 +91,8 @@ public class BreakLogDAO {
                     rs.getInt("log_id"),
                     rs.getInt("operator_id"),
                     rs.getInt("vehicle_id"),
-                    rs.getTimestamp("break_start").toLocalDateTime(),
-                    rs.getTimestamp("break_end") != null ? rs.getTimestamp("break_end").toLocalDateTime() : null
+                    rs.getString("status"),
+                    rs.getTimestamp("timestamp").toLocalDateTime()
                 ));
             }
         } catch (SQLException e) {
@@ -99,4 +101,18 @@ public class BreakLogDAO {
         }
         return breakLogs;
     }
+    // Log Out-of-Service as a separate entry
+public void logOutOfService(int operatorId, int vehicleId, LocalDateTime time) {
+    String sql = "INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES (?, ?, 'Out-of-Service', ?)";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, operatorId);
+        stmt.setInt(2, vehicleId);
+        stmt.setTimestamp(3, Timestamp.valueOf(time));
+        stmt.executeUpdate();
+    } catch (SQLException e) {
+        System.err.println("Error logging out-of-service: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+
 }

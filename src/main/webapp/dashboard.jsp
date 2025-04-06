@@ -34,13 +34,16 @@
         %>
         <hr>
         <h2>Log Break / Out-of-Service</h2>
+        
         <form action="breakLog" method="post">
-            <label for="vehicleId">Vehicle ID:</label>
-            <input type="number" name="vehicleId" id="vehicleId" required />
-            <br><br>
-            <button type="submit" name="mode" value="start">Start Break</button>
-            <button type="submit" name="mode" value="end">End Break</button>
-        </form>
+    <label for="vehicleId">Vehicle ID:</label>
+    <input type="number" name="vehicleId" id="vehicleId" required />
+    <br><br>
+    <button type="submit" name="mode" value="start">Start Break</button>
+    <button type="submit" name="mode" value="end">End Break</button>
+    <button type="submit" name="mode" value="outofservice">Out-of-Service</button>
+</form>
+
         <%
             }
         %>

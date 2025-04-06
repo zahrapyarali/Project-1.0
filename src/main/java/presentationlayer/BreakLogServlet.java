@@ -5,21 +5,23 @@ import datalayer.DataSource;
 import datalayer.User;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 
-@WebServlet("/breakLog")
 public class BreakLogServlet extends HttpServlet {
     
-    @Override
+     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String mode = request.getParameter("mode"); // "start" or "end"
+        String mode = request.getParameter("mode"); // "start", "end", or "outofservice"
         int vehicleId = Integer.parseInt(request.getParameter("vehicleId"));
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+
+        System.out.println("Mode: " + mode);
+        System.out.println("Vehicle ID: " + vehicleId);
+        System.out.println("Operator ID: " + user.getUserId());
 
         if (user == null || !"Operator".equals(user.getRole())) {
             response.sendRedirect("login.html");
@@ -34,6 +36,8 @@ public class BreakLogServlet extends HttpServlet {
                 dao.startBreak(user.getUserId(), vehicleId, now);
             } else if ("end".equals(mode)) {
                 dao.endBreak(user.getUserId(), vehicleId, now);
+            } else if ("outofservice".equals(mode)) {
+                dao.logOutOfService(user.getUserId(), vehicleId, now); // <-- new method
             }
 
             response.sendRedirect("dashboard.jsp");
