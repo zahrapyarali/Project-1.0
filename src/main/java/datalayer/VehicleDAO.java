@@ -11,13 +11,9 @@ public class VehicleDAO implements DAO<Vehicle> {
         this.conn = conn;
     }
 
-    VehicleDAO() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
     @Override
     public void insert(Vehicle vehicle) {
-        String sql = "INSERT INTO vehicles (type, number, fuelType, maxPassengers, currentAssignedRoute, manager_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO vehicles (vehicleType, vehicleNumber, fuelType, maxPassengers, assignedRoute, manager_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, vehicle.getType());
             stmt.setString(2, vehicle.getNumber());
@@ -33,7 +29,7 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public void update(Vehicle vehicle) {
-        String sql = "UPDATE vehicles SET type=?, number=?, fuelType=?, maxPassengers=?, currentAssignedRoute=?, manager_id=? WHERE id=?";
+        String sql = "UPDATE vehicles SET vehicleType=?, vehicleNumber=?, fuelType=?, maxPassengers=?, assignedRoute=?, manager_id=? WHERE vehicleId=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, vehicle.getType());
             stmt.setString(2, vehicle.getNumber());
@@ -50,29 +46,54 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM vehicles WHERE id=?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql_vehicles         = "DELETE FROM vehicles WHERE vehicleId=?";
+        String sql_gps_data         = "DELETE FROM gps_data WHERE vehicle_id=?";
+        String sql_break_logs       = "DELETE FROM break_logs WHERE vehicle_id=?";
+        String sql_maintenance_logs = "DELETE FROM maintenance_logs WHERE vehicle_id=?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql_gps_data)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+                
+        try (PreparedStatement stmt = conn.prepareStatement(sql_break_logs)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql_maintenance_logs)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }         
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql_vehicles)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }        
     }
 
     @Override
     public Vehicle findById(int id) {
-        String sql = "SELECT * FROM vehicles WHERE id=?";
+        String sql = "SELECT * FROM vehicles WHERE vehicleId=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new Vehicle(
-                    rs.getInt("id"),
-                    rs.getString("type"),
-                    rs.getString("number"),
+                    rs.getInt("vehicleId"),
+                    rs.getString("vehicleType"),
+                    rs.getString("vehicleNumber"),
                     rs.getString("fuelType"),
                     rs.getInt("maxPassengers"),
-                    rs.getString("currentAssignedRoute"),
+                    rs.getString("assignedRoute"),
                     rs.getInt("manager_id")
                 );
             }
@@ -90,12 +111,12 @@ public class VehicleDAO implements DAO<Vehicle> {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 vehicles.add(new Vehicle(
-                    rs.getInt("id"),
-                    rs.getString("type"),
-                    rs.getString("number"),
+                    rs.getInt("vehicleId"),
+                    rs.getString("vehicleType"),
+                    rs.getString("vehicleNumber"),
                     rs.getString("fuelType"),
                     rs.getInt("maxPassengers"),
-                    rs.getString("currentAssignedRoute"),
+                    rs.getString("assignedRoute"),
                     rs.getInt("manager_id")
                 ));
             }

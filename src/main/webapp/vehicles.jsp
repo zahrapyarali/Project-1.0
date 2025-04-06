@@ -23,15 +23,15 @@
                 </tr>
                 <c:forEach var="v" items="${vehicleList}">
                     <tr>
-                        <td>${v.vehicleId}</td>
+                        <td>${v.id}</td>
                         <td>${v.type}</td>
-                        <td>${v.vehicleNumber}</td>
+                        <td>${v.number}</td>
                         <td>${v.fuelType}</td>
-                        <td>${v.currentRoute}</td>
+                        <td>${v.currentAssignedRoute}</td>
                         <td>
-                            <a class="button" href="vehicles?action=delete&vehicleId=${v.vehicleId}"
+                            <a class="button" href="RegisterVehicle?action=delete&vehicleId=${v.id}"
                                onclick="return confirm('Are you sure you want to delete this vehicle?');">Delete</a>
-                            <a class="button" href="gpsList.jsp?vehicleId=${v.vehicleId}">View GPS Data</a>
+                            <a class="button" href="gpsList.jsp?vehicleId=${v.id}">View GPS Data</a>
                         </td>
                     </tr>
                 </c:forEach>
