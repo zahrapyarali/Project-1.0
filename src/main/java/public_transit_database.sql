@@ -49,6 +49,15 @@ CREATE TABLE IF NOT EXISTS break_logs (
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicleId)
 );
 
+CREATE TABLE IF NOT EXISTS maintenance_logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    component VARCHAR(100),
+    hours_used INT,
+    threshold INT, -- when to trigger an alert
+    is_scheduled BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicleId)
+);
 -- Sample manager
 INSERT INTO user (name, email, password, role) 
 VALUES 
@@ -124,3 +133,8 @@ VALUES
 (4, 'Out-of-Service', '2025-04-06 18:00:00');
 
 
+INSERT INTO maintenance_logs (vehicle_id, component, hours_used, threshold) VALUES
+(1, 'Brakes', 120, 100),
+(2, 'Axle Bearings', 80, 90),
+(3, 'Pantograph', 110, 100),
+(4, 'Engine', 130, 120);

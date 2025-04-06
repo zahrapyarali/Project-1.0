@@ -1,24 +1,29 @@
 package businesslayer;
 
-public class MaintenanceAlert implements FuelConsumptionObserver, MaintenanceObserver {
-    private String alertType;
+public class MaintenanceAlert implements MaintenanceObserver {
 
-    
+    private String alertMessage;
 
     @Override
-    public void update(double wearLevel) {
-        // React to changes in vehicle wear and issue a maintenance alert
-        if (wearLevel > 75) {
-            alertType = "Vehicle wear level is high! Maintenance required!";
-            System.out.println(alertType);
+    public void update(int vehicleId, String component, int hoursUsed, int threshold) {
+        if (hoursUsed >= threshold) {
+            alertMessage = "️Maintenance Required: Vehicle ID " + vehicleId +
+                    " - Component '" + component + "' exceeded usage (" + hoursUsed + "/" + threshold + ")";
+            System.out.println(alertMessage);
         } else {
-            alertType = "Vehicle is in good condition.";
-            System.out.println(alertType);
+            alertMessage = "Vehicle ID " + vehicleId +
+                    " - Component '" + component + "' is within safe usage.";
+            System.out.println(alertMessage);
         }
     }
 
-    // Optional: You could add getters or setters to retrieve or update the alert type.
-    public String getAlertType() {
-        return alertType;
+    // This is required because it's declared in the interface
+    @Override
+    public void update(double wearLevel) {
+        // Optional: Leave empty if not used by this alert
+    }
+
+    public String getAlertMessage() {
+        return alertMessage;
     }
 }

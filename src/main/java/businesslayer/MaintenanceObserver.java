@@ -1,14 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package businesslayer;
 
 /**
- *
- * @author drder
+ * Observer interface for maintenance notifications.
+ * Implemented by classes that want to receive maintenance alerts.
+ * 
+ * @author YourName
  */
 public interface MaintenanceObserver {
-    void update(double wearLevel);
-    
+    void update(int vehicleId, String component, int hoursUsed, int threshold);
+
+    public void update(double wearLevel);
 }
