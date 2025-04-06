@@ -22,7 +22,7 @@ public class RegisterVehicleServlet extends HttpServlet {
     public void init() throws ServletException {
         vehicleFactory = new VehicleFactory();
 
-        // ✅ Initialize DataSource credentials (make sure to set your actual DB user/password)
+        // Initialize DataSource credentials (make sure to set your actual DB user/password)
         DataSource dataSource = DataSource.getInstance();
         dataSource.setCredentials("cst8288", "cst8288");
     }
@@ -33,14 +33,14 @@ public class RegisterVehicleServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // ✅ Retrieve form parameters
+        //  Retrieve form parameters
         String type = request.getParameter("type");
         String number = request.getParameter("number");
         String fuelType = request.getParameter("fuelType");
         int maxPassengers = Integer.parseInt(request.getParameter("maxPassengers"));
         String currentAssignedRoute = request.getParameter("currentAssignedRoute");
 
-        // ✅ Retrieve manager ID from session
+        //  Retrieve manager ID from session
         HttpSession session = request.getSession(false);
         int managerId = 0;
         if (session != null && session.getAttribute("user") != null) {
@@ -49,7 +49,7 @@ public class RegisterVehicleServlet extends HttpServlet {
             managerId = user.getUserId();
         }
 
-        // ✅ Create vehicle using VehicleBuilder
+        //  Create vehicle using VehicleBuilder
         Vehicle vehicle = new VehicleBuilder()
                 .setType(type)
                 .setNumber(number)
@@ -58,13 +58,13 @@ public class RegisterVehicleServlet extends HttpServlet {
                 .setCurrentAssignedRoute(currentAssignedRoute)
                 .build();
 
-        vehicle.setManagerId(managerId); // ✅ Set manager ID for DAO
+        vehicle.setManagerId(managerId); //  Set manager ID for DAO
 
         try (Connection conn = DataSource.getInstance().createConnection()) {
             VehicleDAO vehicleDAO = new VehicleDAO(DataSource.getInstance().createConnection());
             vehicleDAO.insert(vehicle);
 
-            // ✅ Optionally: initialize VehicleWearMonitor
+            //  Optionally: initialize VehicleWearMonitor
             VehicleWearMonitor wearMonitor = new VehicleWearMonitor();
             wearMonitor.updateWear(0); // Initial wear level
 

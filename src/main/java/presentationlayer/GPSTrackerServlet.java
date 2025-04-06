@@ -23,8 +23,11 @@ public class GPSTrackerServlet extends HttpServlet {
 
             // Save to database
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/public_transit_db", "root", "Gchrome1@");
+//            zahra's connection
+//            Connection conn = DriverManager.getConnection(
+//                    "jdbc:mysql://localhost:3306/public_transit_db", "root", "Gchrome1@");
+              Connection conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/public_transit_db", "cst8288", "cst8288");
 
             GPSTracking gpsData = new GPSTracking(0, vehicleId, location, timestamp, status);
             GPSTrackingDAO gpsDao = new GPSTrackingDAO(conn);

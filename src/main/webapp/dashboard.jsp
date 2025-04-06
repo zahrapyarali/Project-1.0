@@ -21,6 +21,10 @@
             <div class="link">
                 <a href="vehicles.jsp">Manage Vehicles</a> |
                 <a href="report.jsp">View Reports</a> |
+                            <%-- Only Managers can view Fuel Report --%>
+            <% if ("Manager".equals(user.getRole())) { %>
+                <a href="fuelReport.jsp">Fuel & Energy Report</a> |
+            <% } %>
                 <a href="logGps.jsp">Log GPS Location</a> |
                 <a href="gpsReport.jsp">View GPS Logs</a> |
                 <form action="logout" method="get" style="display:inline;">
