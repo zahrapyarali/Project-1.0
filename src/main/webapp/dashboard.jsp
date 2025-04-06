@@ -19,7 +19,7 @@
             <p>Your role: <%= user.getRole() %></p>
 
             <div class="link">
-                <a href="vehicles.jsp">Manage Vehicles</a> |
+                <a href="RegisterVehicle">Manage Vehicles</a> |
                 <a href="report.jsp">View Reports</a> |
             <%-- Only Managers can view Fuel and Maintenance Reports --%>
             <% if ("Manager".equals(user.getRole())) { %>
