@@ -1,14 +1,14 @@
--- Create the database if it doesn't exist
+-- Create the database
 
 DROP DATABASE IF EXISTS public_transit_db;
 
 CREATE DATABASE IF NOT EXISTS public_transit_db;
  
--- Switch to using the newly created database
+-- Use the database
 
 USE public_transit_db;
  
--- Create users table to store system users
+-- Create users table
 
 CREATE TABLE IF NOT EXISTS user (
 
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 );
  
--- Create vehicles table with manager_id column
+-- Create vehicles table
 
 CREATE TABLE IF NOT EXISTS vehicles (
 
@@ -49,8 +49,6 @@ CREATE TABLE IF NOT EXISTS vehicles (
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
- 
-    -- Constraints
 
     CONSTRAINT chk_fuel_type CHECK (
 
@@ -75,55 +73,48 @@ CREATE TABLE IF NOT EXISTS vehicles (
     CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES user(id)
 
 );
+ 
+-- Create break logs table (includes operator_id)
 
 CREATE TABLE IF NOT EXISTS break_logs (
+
     log_id INT AUTO_INCREMENT PRIMARY KEY,
+
     operator_id INT NOT NULL,
+
     vehicle_id INT NOT NULL,
+
     status ENUM('Check-In', 'Check-Out', 'Out-of-Service') NOT NULL,
+
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+
     FOREIGN KEY (operator_id) REFERENCES user(id),
+
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicleId)
+
 );
-
  
--- Sample manager
+-- Create maintenance logs table (with is_scheduled flag)
 
-INSERT INTO user (name, email, password, role) 
+CREATE TABLE IF NOT EXISTS maintenance_logs (
 
-VALUES 
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
 
-("Ambika", "ambika@example.com", "ambika", "Manager"),
+    vehicle_id INT NOT NULL,
 
-("Operator", "operator@example.com", "1234", "Operator");
+    component VARCHAR(100),
+
+    hours_used INT,
+
+    threshold INT,
+
+    is_scheduled BOOLEAN DEFAULT FALSE,
+
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicleId)
+
+);
  
--- Insert vehicles and associate with manager ID = 1
-
-INSERT INTO vehicles (
-
-    vehicleType, vehicleNumber, fuelType, maxPassengers, assignedRoute, 
-
-    lastMaintenanceDate, nextMaintenanceDate, manager_id
-
-) VALUES 
-
--- Diesel Bus with Diesel
-
-('Diesel Bus', 'DB1234', 'Diesel', 40, 'Route 1', '2024-12-01', '2025-06-01', 1),
- 
--- Diesel Bus with CNG
-
-('Diesel Bus', 'DB5678', 'CNG', 50, 'Route 2', '2025-01-10', '2025-07-10', 1),
- 
--- Electric Light Rail
-
-('Electric Light Rail', 'ELR9012', 'Electric', 150, 'Route 3', '2025-02-15', '2025-08-15', 1),
- 
--- Diesel-Electric Train
-
-('Diesel-Electric Train', 'DET3456', 'Diesel-Electric', 300, 'Route 4', '2025-03-01', '2025-09-01', 1);
- 
--- GPS log table
+-- Create GPS log table
 
 CREATE TABLE IF NOT EXISTS gps_data (
 
@@ -141,56 +132,80 @@ CREATE TABLE IF NOT EXISTS gps_data (
 
 );
  
--- Sample GPS entries
+-- Sample users
 
--- GPS logs for all vehicle types (Departure + Arrival pairs)
+INSERT INTO user (name, email, password, role) 
+
+VALUES 
+
+("Ambika", "ambika@example.com", "ambika", "Manager"),
+
+("Operator", "operator@example.com", "1234", "Operator");
+ 
+-- Sample vehicles (linked to manager ID = 1)
+
+INSERT INTO vehicles (
+
+    vehicleType, vehicleNumber, fuelType, maxPassengers, assignedRoute, 
+
+    lastMaintenanceDate, nextMaintenanceDate, manager_id
+
+) VALUES 
+
+('Diesel Bus', 'DB1234', 'Diesel', 40, 'Route 1', '2024-12-01', '2025-06-01', 1),
+
+('Diesel Bus', 'DB5678', 'CNG', 50, 'Route 2', '2025-01-10', '2025-07-10', 1),
+
+('Electric Light Rail', 'ELR9012', 'Electric', 150, 'Route 3', '2025-02-15', '2025-08-15', 1),
+
+('Diesel-Electric Train', 'DET3456', 'Diesel-Electric', 300, 'Route 4', '2025-03-01', '2025-09-01', 1);
+ 
+-- Sample GPS logs
 
 INSERT INTO gps_data (vehicle_id, location, timestamp, status) VALUES
-
--- DB1234 (Diesel Bus - Diesel)
 
 (1, 'Ottawa Station', '2025-04-06 08:00:00', 'Departure'),
 
 (1, 'Ottawa Station', '2025-04-06 08:20:00', 'Arrival'),
- 
--- DB5678 (Diesel Bus - CNG)
 
 (2, 'Kanata Terminal', '2025-04-06 09:00:00', 'Departure'),
 
 (2, 'Kanata Terminal', '2025-04-06 09:25:00', 'Arrival'),
- 
--- ELR9012 (Electric Light Rail)
 
 (3, 'Bayshore', '2025-04-06 10:00:00', 'Departure'),
 
 (3, 'Bayshore', '2025-04-06 10:40:00', 'Arrival'),
- 
--- DET3456 (Diesel-Electric Train)
 
 (4, 'Union Station', '2025-04-06 11:00:00', 'Departure'),
 
 (4, 'Union Station', '2025-04-06 12:00:00', 'Arrival');
  
--- Diesel Bus (vehicleId = 1)
+-- Sample break logs (with operator_id = 2)
 
--- Diesel Bus (vehicleId = 1)
-INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp)
-VALUES 
+INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES
+
 (2, 1, 'Check-In', '2025-04-06 08:30:00'),
-(2, 1, 'Out-of-Service', '2025-04-06 14:00:00');
 
--- Diesel Bus (CNG, vehicleId = 2)
-INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp)
-VALUES 
-(2, 2, 'Check-In', '2025-04-06 09:40:00');
+(2, 1, 'Out-of-Service', '2025-04-06 14:00:00'),
 
--- Electric Light Rail (vehicleId = 3)
-INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp)
-VALUES 
-(2, 3, 'Out-of-Service', '2025-04-06 11:00:00');
+(2, 2, 'Check-In', '2025-04-06 09:40:00'),
 
--- Diesel-Electric Train (vehicleId = 4)
-INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp)
-VALUES 
+(2, 3, 'Out-of-Service', '2025-04-06 11:00:00'),
+
 (2, 4, 'Check-In', '2025-04-06 12:30:00'),
+
 (2, 4, 'Out-of-Service', '2025-04-06 18:00:00');
+ 
+-- Sample maintenance logs (with alerts)
+
+INSERT INTO maintenance_logs (vehicle_id, component, hours_used, threshold) VALUES
+
+(1, 'Brakes', 120, 100),
+
+(2, 'Axle Bearings', 80, 90),
+
+(3, 'Pantograph', 110, 100),
+
+(4, 'Engine', 130, 120);
+
+ 
