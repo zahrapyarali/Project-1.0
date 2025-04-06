@@ -42,4 +42,4 @@ CREATE TABLE IF NOT EXISTS vehicles (
         (vehicleType = 'Diesel-Electric Train' AND maxPassengers BETWEEN 100 AND 500)
     )
 );
-INSERT INTO users (name, email, password, role) VALUES ("Ambika","ambika@example.com", "ambika", "Manager");
+INSERT INTO user (name, email, password, role) VALUES ("Ambika","ambika@example.com", "ambika", "Manager");
