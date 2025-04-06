@@ -1,3 +1,10 @@
+<%
+    if (session == null || !"Manager".equals(session.getAttribute("role"))) {
+        response.sendRedirect("unauthorized.jsp");
+        return;
+    }
+%>
+
 <%@ page import="datalayer.GPSTracking, datalayer.GPSTrackingDAO, java.util.List, java.sql.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -14,7 +21,7 @@
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/public_transit_db", "root", "root");
+                "jdbc:mysql://localhost:3306/public_transit_db", "cst8288", "cst8288");
             GPSTrackingDAO gpsDao = new GPSTrackingDAO(conn);
             gpsLogs = gpsDao.findAll(); // no latitude/longitude, just location, status, timestamp
         } catch (Exception e) {

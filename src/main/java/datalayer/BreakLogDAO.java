@@ -1,56 +1,89 @@
 package datalayer;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BreakLogDAO {
 
-    private Connection conn;
+    private final Connection conn;
 
     public BreakLogDAO(Connection conn) {
         this.conn = conn;
     }
 
-    // Save a BreakLog to the database
+    // Save complete log manually (if needed)
     public void save(BreakLog breakLog) {
-        String sql = "INSERT INTO break_log (operator_id, vehicle_id, break_start, break_end) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, breakLog.getOperatorId());
             stmt.setInt(2, breakLog.getVehicleId());
-            stmt.setTimestamp(3, Timestamp.valueOf(breakLog.getBreakStart())); // Converting LocalDateTime to Timestamp
-            stmt.setTimestamp(4, Timestamp.valueOf(breakLog.getBreakEnd()));     // Converting LocalDateTime to Timestamp
+            stmt.setString(3, breakLog.getStatus());
+            stmt.setTimestamp(4, Timestamp.valueOf(breakLog.getTimestamp()));
             stmt.executeUpdate();
         } catch (SQLException e) {
+            System.err.println("Error saving break log: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Find a BreakLog by its ID
-    public BreakLog findById(int id) {
-        String sql = "SELECT * FROM break_log WHERE log_id = ?";
+    // Start break with status = "Break"
+    public void startBreak(int operatorId, int vehicleId, LocalDateTime time) {
+        String sql = "INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new BreakLog(
-                    rs.getInt("log_id"),
-                    rs.getInt("operator_id"),
-                    rs.getInt("vehicle_id"),
-                    rs.getTimestamp("break_start").toLocalDateTime(), // Convert Timestamp to LocalDateTime
-                    rs.getTimestamp("break_end").toLocalDateTime()    // Convert Timestamp to LocalDateTime
-                );
-            }
+            stmt.setInt(1, operatorId);
+            stmt.setInt(2, vehicleId);
+            stmt.setString(3, "Check-In");
+            stmt.setTimestamp(4, Timestamp.valueOf(time));
+            stmt.executeUpdate();
         } catch (SQLException e) {
+            System.err.println("Error starting break: " + e.getMessage());
             e.printStackTrace();
         }
-        return null;
     }
 
-    // Find all BreakLogs
+    // End break with status = "Out-of-Service"
+    public void endBreak(int operatorId, int vehicleId, LocalDateTime time) {
+        String sql = "INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, operatorId);
+            stmt.setInt(2, vehicleId);
+            stmt.setString(3, "Check-Out");
+            stmt.setTimestamp(4, Timestamp.valueOf(time));
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error ending break: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public BreakLog findById(int id) {
+    String sql = "SELECT * FROM break_logs WHERE log_id = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return new BreakLog(
+                rs.getInt("log_id"),
+                rs.getInt("operator_id"),
+                rs.getInt("vehicle_id"),
+                rs.getString("status"),
+                rs.getTimestamp("timestamp").toLocalDateTime()
+            );
+        }
+    } catch (SQLException e) {
+        System.err.println("Error fetching break log by ID: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return null;
+}
+
+
+    // Get all logs
     public List<BreakLog> findAll() {
         List<BreakLog> breakLogs = new ArrayList<>();
-        String sql = "SELECT * FROM break_log";
+        String sql = "SELECT * FROM break_logs";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -58,13 +91,28 @@ public class BreakLogDAO {
                     rs.getInt("log_id"),
                     rs.getInt("operator_id"),
                     rs.getInt("vehicle_id"),
-                    rs.getTimestamp("break_start").toLocalDateTime(), // Convert Timestamp to LocalDateTime
-                    rs.getTimestamp("break_end").toLocalDateTime()    // Convert Timestamp to LocalDateTime
+                    rs.getString("status"),
+                    rs.getTimestamp("timestamp").toLocalDateTime()
                 ));
             }
         } catch (SQLException e) {
+            System.err.println("Error fetching all break logs: " + e.getMessage());
             e.printStackTrace();
         }
         return breakLogs;
     }
+    // Log Out-of-Service as a separate entry
+public void logOutOfService(int operatorId, int vehicleId, LocalDateTime time) {
+    String sql = "INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES (?, ?, 'Out-of-Service', ?)";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, operatorId);
+        stmt.setInt(2, vehicleId);
+        stmt.setTimestamp(3, Timestamp.valueOf(time));
+        stmt.executeUpdate();
+    } catch (SQLException e) {
+        System.err.println("Error logging out-of-service: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+
 }

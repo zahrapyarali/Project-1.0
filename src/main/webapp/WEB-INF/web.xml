@@ -58,6 +58,8 @@
         <servlet-name>GPSTrackerServlet</servlet-name>
         <url-pattern>/GPSTrackerServlet</url-pattern>
     </servlet-mapping>
+    
+   
 
     <!-- GPS Reporter Servlet (for gpsReport.jsp) -->
     <servlet>
@@ -69,12 +71,18 @@
         <url-pattern>/GPSReporterServlet</url-pattern>
     </servlet-mapping>
 
-<!--     Default page 
-    <welcome-file-list>
-        <welcome-file>login.html</welcome-file>
-    </welcome-file-list>-->
 
-<!--</web-app>-->
+ <!--BreakLog Servlet  -->
+<servlet>
+    <servlet-name>BreakLogServlet</servlet-name>
+    <servlet-class>presentationlayer.BreakLogServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>BreakLogServlet</servlet-name>
+    <url-pattern>/breakLog</url-pattern>
+</servlet-mapping>
+
+    <!-- Default page -->
     
     <welcome-file-list>
         <welcome-file>login.html</welcome-file>

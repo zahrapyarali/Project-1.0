@@ -151,6 +151,8 @@ public class UserDAO implements DAO<User> {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                 String storedPassword = rs.getString("password");
+            if (storedPassword.equals(password)) {
                 return new User(
                     rs.getInt("id"),
                     rs.getString("name"),
@@ -158,6 +160,7 @@ public class UserDAO implements DAO<User> {
                     rs.getString("password"),
                     rs.getString("role")
                 );
+            }
             }
         } catch (IllegalArgumentException e) {
             // If the role in the database is not "MANAGER" or "OPERATOR", throw an exception
