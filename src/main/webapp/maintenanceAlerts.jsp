@@ -55,6 +55,7 @@
                 DataSource ds = DataSource.getInstance();
                 MaintenanceLogDAO dao = new MaintenanceLogDAO(ds.createConnection());
                 List<MaintenanceLog> logs = dao.findOverdueAlerts();
+                 User user = (User) session.getAttribute("user"); 
 
                 if (request.getMethod().equalsIgnoreCase("POST")) {
                     String logIdStr = request.getParameter("logId");
@@ -79,7 +80,9 @@
                 <th>Hours Used</th>
                 <th>Threshold</th>
                 <th>Status</th>
+                <% if ("Manager".equals(user.getRole())) { %>
                 <th>Action</th>
+                <% } %>
             </tr>
             <%
                 for (MaintenanceLog log : logs) {
@@ -90,22 +93,22 @@
                 <td><%= log.getHoursUsed()%></td>
                 <td><%= log.getThreshold()%></td>
                 <td class="alert">Maintenance Required</td>
+                <% if ("Manager".equals(user.getRole())) { %>
                 <td>
                     <%
-                        if (log.isScheduled()) {
-                    %>
-                    <span class="scheduled">Scheduled</span>
-                    <%
+                    if (log.isScheduled()) {
+                        %>
+                        <span class="scheduled">Scheduled</span>
+                        <%
                     } else {
-                    %>
-                    <form method="post" style="display:inline;">
-                        <input type="hidden" name="logId" value="<%= log.getLogId()%>" />
-                        <button type="submit" class="btn">Schedule</button>
-                    </form>
-                    <%
-                        }
-                    %>
+                        %>
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="logId" value="<%= log.getLogId()%>" />
+                            <button type="submit" class="btn">Schedule</button>
+                        </form>
+                <% } %>
                 </td>
+                <% } %>
             </tr>
             <%
                 }
