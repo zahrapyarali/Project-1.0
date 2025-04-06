@@ -17,7 +17,7 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public void insert(Vehicle vehicle) {
-        String sql = "INSERT INTO vehicles (type, number, fuelType, maxPassengers, currentAssignedRoute, manager_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO vehicles (vehicleType, vehicleNumber, fuelType, maxPassengers, assignedRoute, manager_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, vehicle.getType());
             stmt.setString(2, vehicle.getNumber());
@@ -33,7 +33,7 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public void update(Vehicle vehicle) {
-        String sql = "UPDATE vehicles SET type=?, number=?, fuelType=?, maxPassengers=?, currentAssignedRoute=?, manager_id=? WHERE id=?";
+        String sql = "UPDATE vehicles SET vehicleType=?, vehicleNumber=?, fuelType=?, maxPassengers=?, assignedRoute=?, manager_id=? WHERE vehicleId=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, vehicle.getType());
             stmt.setString(2, vehicle.getNumber());
@@ -50,7 +50,7 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM vehicles WHERE id=?";
+        String sql = "DELETE FROM vehicles WHERE vehicleId=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -61,18 +61,18 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public Vehicle findById(int id) {
-        String sql = "SELECT * FROM vehicles WHERE id=?";
+        String sql = "SELECT * FROM vehicles WHERE vehicleId=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new Vehicle(
-                    rs.getInt("id"),
-                    rs.getString("type"),
-                    rs.getString("number"),
+                    rs.getInt("vehicleId"),
+                    rs.getString("vehicleType"),
+                    rs.getString("vehicleNumber"),
                     rs.getString("fuelType"),
                     rs.getInt("maxPassengers"),
-                    rs.getString("currentAssignedRoute"),
+                    rs.getString("assignedRoute"),
                     rs.getInt("manager_id")
                 );
             }
@@ -90,12 +90,12 @@ public class VehicleDAO implements DAO<Vehicle> {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 vehicles.add(new Vehicle(
-                    rs.getInt("id"),
-                    rs.getString("type"),
-                    rs.getString("number"),
+                    rs.getInt("vehicleId"),
+                    rs.getString("vehicleType"),
+                    rs.getString("vehicleNumber"),
                     rs.getString("fuelType"),
                     rs.getInt("maxPassengers"),
-                    rs.getString("currentAssignedRoute"),
+                    rs.getString("assignedRoute"),
                     rs.getInt("manager_id")
                 ));
             }
