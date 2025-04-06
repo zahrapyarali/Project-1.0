@@ -50,13 +50,38 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM vehicles WHERE vehicleId=?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql_vehicles         = "DELETE FROM vehicles WHERE vehicleId=?";
+        String sql_gps_data         = "DELETE FROM gps_data WHERE vehicle_id=?";
+        String sql_break_logs       = "DELETE FROM break_logs WHERE vehicle_id=?";
+        String sql_maintenance_logs = "DELETE FROM maintenance_logs WHERE vehicle_id=?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql_gps_data)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+                
+        try (PreparedStatement stmt = conn.prepareStatement(sql_break_logs)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql_maintenance_logs)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }         
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql_vehicles)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }        
     }
 
     @Override
