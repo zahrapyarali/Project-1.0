@@ -15,7 +15,7 @@ public class DataSource {
 
     // JDBC URL for the MySQL database
     private final String url = "jdbc:mysql://localhost:3306/public_transit_db";
-
+                             
     // Database credentials
     private String user, password;
     /**
@@ -58,6 +58,11 @@ public class DataSource {
      * @throws SQLException if a database access error occurs
      */
     public Connection createConnection() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
+        try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }     
+    return DriverManager.getConnection(url, user, password);
     }
 }

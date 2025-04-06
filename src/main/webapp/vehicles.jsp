@@ -38,7 +38,7 @@
             </table>
 
             <h3>Add New Vehicle</h3>
-            <form action="vehicles" method="post">
+            <form action="RegisterVehicle" method="post">
                 <div class="form-group">
                     <label for="type">Type</label>
                     <input type="text" id="type" name="type" required>

@@ -17,7 +17,7 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public void insert(Vehicle vehicle) {
-        String sql = "INSERT INTO vehicle (type, number, fuelType, maxPassengers, currentAssignedRoute, manager_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO vehicles (type, number, fuelType, maxPassengers, currentAssignedRoute, manager_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, vehicle.getType());
             stmt.setString(2, vehicle.getNumber());
@@ -33,7 +33,7 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public void update(Vehicle vehicle) {
-        String sql = "UPDATE vehicle SET type=?, number=?, fuelType=?, maxPassengers=?, currentAssignedRoute=?, manager_id=? WHERE id=?";
+        String sql = "UPDATE vehicles SET type=?, number=?, fuelType=?, maxPassengers=?, currentAssignedRoute=?, manager_id=? WHERE id=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, vehicle.getType());
             stmt.setString(2, vehicle.getNumber());
@@ -50,7 +50,7 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM vehicle WHERE id=?";
+        String sql = "DELETE FROM vehicles WHERE id=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -61,7 +61,7 @@ public class VehicleDAO implements DAO<Vehicle> {
 
     @Override
     public Vehicle findById(int id) {
-        String sql = "SELECT * FROM vehicle WHERE id=?";
+        String sql = "SELECT * FROM vehicles WHERE id=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -85,7 +85,7 @@ public class VehicleDAO implements DAO<Vehicle> {
     @Override
     public List<Vehicle> findAll() {
         List<Vehicle> vehicles = new ArrayList<>();
-        String sql = "SELECT * FROM vehicle";
+        String sql = "SELECT * FROM vehicles";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {

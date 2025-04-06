@@ -8,15 +8,15 @@ import java.io.IOException;
 import java.sql.SQLException;
 public class TransitController {
 
-    public User authenticateUser(String email, String password) throws SQLException {
-    // Dummy logic — Replace this with real DB call or business logic
-    if ("admin@example.com".equals(email) && "admin123".equals(password)) {
-        return new User(1, "Admin", email, password, "admin");
-    } else if ("user@example.com".equals(email) && "user123".equals(password)) {
-        return new User(2, "Regular User", email, password, "user");
-    }
-    return null; // Invalid credentials
-}
+//    public User authenticateUser(String email, String password) throws SQLException {
+//    // Dummy logic — Replace this with real DB call or business logic
+//    if ("admin@example.com".equals(email) && "admin123".equals(password)) {
+//        return new User(1, "Admin", email, password, "admin");
+//    } else if ("user@example.com".equals(email) && "user123".equals(password)) {
+//        return new User(2, "Regular User", email, password, "user");
+//    }
+//    return null; // Invalid credentials}
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
 
