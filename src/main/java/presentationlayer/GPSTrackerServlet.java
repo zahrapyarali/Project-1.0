@@ -34,7 +34,7 @@ public class GPSTrackerServlet extends HttpServlet {
 
             conn.close();
 
-            response.sendRedirect("gpsReport.jsp");
+            response.sendRedirect("dashboard.jsp");
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().write("Error occurred: " + e.getMessage());
