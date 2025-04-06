@@ -2,26 +2,31 @@ package datalayer;
 
 import java.time.LocalDateTime;
 
-
 public class GPSTracking {
-
     private int trackingId;
-    private int vehicleId;  // Foreign Key referencing the vehicle
-    private String location;  // Store the location as a string (e.g., "New York" or "coordinates")
+    private int vehicleId;
+    private String location;
     private LocalDateTime timestamp;
+    private String status;
 
-    // Default constructor
     public GPSTracking() {}
 
-    // Constructor with latitude and longitude
-    public GPSTracking(int trackingId, int vehicleId, String location, LocalDateTime timestamp) {
+    public GPSTracking(int trackingId, int vehicleId, String location, LocalDateTime timestamp, String status) {
         this.trackingId = trackingId;
         this.vehicleId = vehicleId;
         this.location = location;
         this.timestamp = timestamp;
+        this.status = status;
     }
 
-    // Getters and Setters
+    // ✅ New constructor
+    public GPSTracking(int vehicleId, String location, String status, LocalDateTime timestamp) {
+        this.vehicleId = vehicleId;
+        this.location = location;
+        this.status = status;
+        this.timestamp = timestamp;
+    }
+
     public int getTrackingId() {
         return trackingId;
     }
@@ -54,13 +59,11 @@ public class GPSTracking {
         this.timestamp = timestamp;
     }
 
-    @Override
-    public String toString() {
-        return "GPSTracking{" +
-                "trackingId=" + trackingId +
-                ", vehicleId=" + vehicleId +
-                ", location='" + location + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

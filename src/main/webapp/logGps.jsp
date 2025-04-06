@@ -1,27 +1,29 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Log GPS Location</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h2>Log GPS Location</h2>
-    <form action="GPSTrackerServlet" method="post">
-        <label for="vehicleId">Vehicle ID:</label>
+
+    <form method="post" action="GPSTrackerServlet" accept-charset="UTF-8">
+        <label>Vehicle ID:</label>
         <input type="number" name="vehicleId" required><br><br>
 
-        <label for="location">Location:</label>
+        <label>Location:</label>
         <input type="text" name="location" required><br><br>
 
-        <button type="submit">Submit GPS Log</button>
-    </form>
+        <label>Status:</label>
+        <select name="status" required>
+            <option value="Arrival">Arrival</option>
+            <option value="Departure">Departure</option>
+        </select><br><br>
 
-    <% if (request.getParameter("success") != null) { %>
-        <p style="color: green;">GPS Log submitted successfully!</p>
-    <% } else if (request.getParameter("error") != null) { %>
-        <p style="color: red;">Error logging GPS data. Please try again.</p>
-    <% } %>
+        <input type="submit" value="Submit">
+    </form>
 
     <p><a href="dashboard.jsp">← Back to Dashboard</a></p>
 </body>

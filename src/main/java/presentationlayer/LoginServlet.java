@@ -10,7 +10,7 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/login")
+
 public class LoginServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {

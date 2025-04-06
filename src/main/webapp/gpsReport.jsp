@@ -3,19 +3,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GPS Tracking Report</title>
+    <title>Transit Station Logs</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>GPS Tracking Report</h2>
+    <h2>Transit Station Arrival & Departure Report</h2>
 
     <%
         List<GPSTracking> gpsLogs = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/public_transit_db", "root", "root"); // update if needed
+            Connection conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/public_transit_db", "root", "root");
             GPSTrackingDAO gpsDao = new GPSTrackingDAO(conn);
-            gpsLogs = gpsDao.findAll();
+            gpsLogs = gpsDao.findAll(); // no latitude/longitude, just location, status, timestamp
         } catch (Exception e) {
             out.println("<p style='color:red;'>Error fetching data: " + e.getMessage() + "</p>");
         }
@@ -23,23 +24,19 @@
 
     <table border="1">
         <tr>
-            <th>Tracking ID</th>
             <th>Vehicle ID</th>
-            <th>Location</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
+            <th>Station</th>
+            <th>Status</th>
             <th>Timestamp</th>
         </tr>
         <%
-            if (gpsLogs != null) {
+            if (gpsLogs != null && !gpsLogs.isEmpty()) {
                 for (GPSTracking log : gpsLogs) {
         %>
         <tr>
-            <td><%= log.getTrackingId() %></td>
             <td><%= log.getVehicleId() %></td>
             <td><%= log.getLocation() %></td>
-            <td><%= log.getLatitude() %></td>
-            <td><%= log.getLongitude() %></td>
+            <td><%= log.getStatus() %></td>
             <td><%= log.getTimestamp() %></td>
         </tr>
         <%
@@ -47,7 +44,7 @@
             } else {
         %>
         <tr>
-            <td colspan="6">No data available.</td>
+            <td colspan="4">No data available.</td>
         </tr>
         <%
             }
