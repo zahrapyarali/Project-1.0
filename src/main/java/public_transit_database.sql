@@ -42,3 +42,13 @@ CREATE TABLE IF NOT EXISTS vehicles (
         (vehicleType = 'Diesel-Electric Train' AND maxPassengers BETWEEN 100 AND 500)
     )
 );
+-- Create gps_data table to store GPS logs
+CREATE TABLE IF NOT EXISTS gps_data (
+    tracking_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    timestamp DATETIME NOT NULL,
+
+    -- Optional: Add foreign key to reference the vehicles table
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicleId)
+);
