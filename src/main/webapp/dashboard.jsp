@@ -21,11 +21,12 @@
             <div class="link">
                 <a href="RegisterVehicle">Manage Vehicles</a> |
                 <a href="report.jsp">View Reports</a> |
+                <a href="fuelReport.jsp">Fuel & Energy Report</a>
+                <a href="maintenanceAlerts.jsp">Maintenance Alerts</a>
             <%-- Only Managers can view Fuel and Maintenance Reports --%>
-            <% if ("Manager".equals(user.getRole())) { %>
-                <a href="fuelReport.jsp">Fuel & Energy Report</a> |
-                <a href="maintenanceAlerts.jsp">Maintenance Alerts</a> |
-            <% } %>
+            <%-- <% if ("Manager".equals(user.getRole())) { %>
+                <a href="maintenanceAlerts.jsp">Maintenance Alerts</a> | <% } %> --%>
+            
                 <a href="logGps.jsp">Log GPS Location</a> |
                 <a href="gpsReport.jsp">View GPS Logs</a> |
                 <form action="logout" method="get" style="display:inline;">
