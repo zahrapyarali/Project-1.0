@@ -1,3 +1,4 @@
+<%@page import="datalayer.User"%>
 <%@ page import="java.util.List" %>
 <%@ page import="businesslayer.FuelConsumptionReportService" %>
 <%@ page import="businesslayer.FuelReportEntry" %>
@@ -52,6 +53,7 @@
                 DataSource ds = DataSource.getInstance();
                 FuelConsumptionReportService service = new FuelConsumptionReportService(ds.createConnection());
                 List<FuelReportEntry> report = service.generateReport();
+                User user = (User) session.getAttribute("user"); 
 
                 if (report.isEmpty()) {
         %>
@@ -65,7 +67,9 @@
                 <th>Vehicle Type</th>
                 <th>Total Distance (km)</th>
                 <th>Fuel/Energy Used</th>
-                <th>Status</th>
+                <% if ("Manager".equals(user.getRole())) { %>
+                    <th>Status</th>
+                 <% } %>
             </tr>
             <%
                 for (FuelReportEntry entry : report) {
@@ -84,9 +88,11 @@
                 <td><%= entry.getVehicleType() %></td>
                 <td><%= String.format("%.2f", entry.getDistanceTravelled()) %></td>
                 <td><%= String.format("%.2f", entry.getFuelOrEnergyUsed()) %></td>
+                <% if ("Manager".equals(user.getRole())) { %>
                 <td style="color: <%= excessive ? "red" : "green" %>;">
                     <%= excessive ? "Excessive Usage" : "Normal" %>
                 </td>
+                <% } %>
             </tr>
             <%
                 }
