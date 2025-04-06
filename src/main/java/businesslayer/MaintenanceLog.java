@@ -1,27 +1,29 @@
 package businesslayer;
 
-import java.time.LocalDateTime;
-
 public class MaintenanceLog {
-    private int maintenanceId;
-    private int vehicleId;  // Foreign Key referencing the Vehicle table
-    private double cost;
-    private LocalDateTime date;
+    private int logId;
+    private int vehicleId;
+    private String component;
+    private int hoursUsed;
+    private int threshold;
+    private boolean isScheduled; 
 
-    public MaintenanceLog(int maintenanceId, int vehicleId, double cost, LocalDateTime date) {
-        this.maintenanceId = maintenanceId;
+    public MaintenanceLog(int logId, int vehicleId, String component, int hoursUsed, int threshold, boolean isScheduled) {
+        this.logId = logId;
         this.vehicleId = vehicleId;
-        this.cost = cost;
-        this.date = date;
+        this.component = component;
+        this.hoursUsed = hoursUsed;
+        this.threshold = threshold;
+        this.isScheduled = isScheduled;
     }
 
     // Getters and Setters
-    public int getMaintenanceId() {
-        return maintenanceId;
+    public int getLogId() {
+        return logId;
     }
 
-    public void setMaintenanceId(int maintenanceId) {
-        this.maintenanceId = maintenanceId;
+    public void setLogId(int logId) {
+        this.logId = logId;
     }
 
     public int getVehicleId() {
@@ -32,29 +34,47 @@ public class MaintenanceLog {
         this.vehicleId = vehicleId;
     }
 
-    public double getCost() {
-        return cost;
+    public String getComponent() {
+        return component;
     }
 
-    public void setCost(double cost) {
-        this.cost = cost;
+    public void setComponent(String component) {
+        this.component = component;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public int getHoursUsed() {
+        return hoursUsed;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setHoursUsed(int hoursUsed) {
+        this.hoursUsed = hoursUsed;
+    }
+
+    public int getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(int threshold) {
+        this.threshold = threshold;
+    }
+
+    public boolean isScheduled() {
+        return isScheduled;
+    }
+
+    public void setScheduled(boolean scheduled) {
+        isScheduled = scheduled;
     }
 
     @Override
     public String toString() {
         return "MaintenanceLog{" +
-                "maintenanceId=" + maintenanceId +
+                "logId=" + logId +
                 ", vehicleId=" + vehicleId +
-                ", cost=" + cost +
-                ", date=" + date +
+                ", component='" + component + '\'' +
+                ", hoursUsed=" + hoursUsed +
+                ", threshold=" + threshold +
+                ", isScheduled=" + isScheduled +
                 '}';
     }
 }
