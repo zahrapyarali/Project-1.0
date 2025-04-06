@@ -69,12 +69,12 @@
         <url-pattern>/GPSReporterServlet</url-pattern>
     </servlet-mapping>
 
-    <!-- Default page -->
+<!--     Default page 
     <welcome-file-list>
         <welcome-file>login.html</welcome-file>
-    </welcome-file-list>
+    </welcome-file-list>-->
 
-</web-app>
+<!--</web-app>-->
     
     <welcome-file-list>
         <welcome-file>login.html</welcome-file>
