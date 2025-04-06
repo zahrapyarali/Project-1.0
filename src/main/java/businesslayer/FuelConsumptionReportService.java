@@ -37,60 +37,55 @@ public class FuelConsumptionReportService {
         for (Vehicle v : vehicles) {
             List<GPSTracking> logs = gpsTrackingDAO.findByVehicleId(v.getId());
 
-            if (logs == null || logs.size() < 2) continue;
+            if (logs == null || logs.size() < 2) {
+                continue;
+            }
 
             logs.sort(Comparator.comparing(GPSTracking::getTimestamp));
 
-            // Debug output
-            System.out.println("Processing Vehicle ID: " + v.getId() + " (" + v.getNumber() + ")");
-            System.out.println("Log entries: " + logs.size());
-
             double totalDistance = 0.0;
-
             for (int i = 1; i < logs.size(); i++) {
                 GPSTracking prev = logs.get(i - 1);
                 GPSTracking curr = logs.get(i);
 
-                String prevStatus = prev.getStatus() != null ? prev.getStatus().toLowerCase() : "";
-                String currStatus = curr.getStatus() != null ? curr.getStatus().toLowerCase() : "";
-
-                if (prevStatus.equals("departure") && currStatus.equals("arrival")) {
-                    Duration duration = Duration.between(prev.getTimestamp(), curr.getTimestamp());
-                    long minutes = duration.toMinutes();
+                if (prev.getStatus().equals("Departure") && curr.getStatus().equals("Arrival")) {
+                    long minutes = Duration.between(prev.getTimestamp(), curr.getTimestamp()).toMinutes();
                     double distance = minutes / 2.0; // Estimated: 1 km per 2 minutes
                     totalDistance += distance;
-
-                    // Debug entry
-                    System.out.println("Matched pair: Departure@" + prev.getTimestamp() + " to Arrival@" + curr.getTimestamp() + " => " + distance + " km");
                 }
             }
 
-            if (totalDistance == 0.0) continue; // Skip if no valid travel found
-
             FuelConsumptionStrategy strategy;
+            double threshold;
             switch (v.getType()) {
-                case "Diesel Bus":
+                case "Diesel Bus" -> {
                     strategy = new DieselBusStrategy();
-                    break;
-                case "Electric Light Rail":
+                    threshold = 15.0; // Liters
+                }
+                case "Electric Light Rail" -> {
                     strategy = new ElectricRailStrategy();
-                    break;
-                case "Diesel-Electric Train":
+                    threshold = 25.0; // kWh
+                }
+                case "Diesel-Electric Train" -> {
                     strategy = new DieselElectricTrainStrategy();
-                    break;
-                default:
-                    continue; // Unknown type
+                    threshold = 30.0; // Liters
+                }
+                default -> {
+                    continue;
+                }
             }
 
             double consumption = strategy.calculateConsumption(totalDistance);
+            boolean alert = consumption > threshold;
 
             report.add(new FuelReportEntry(
-                v.getId(),
-                v.getType(),
-                v.getFuelType(),
-                v.getNumber(),
-                totalDistance,
-                consumption
+                    v.getId(),
+                    v.getType(),
+                    v.getFuelType(),
+                    v.getNumber(),
+                    totalDistance,
+                    consumption,
+                    alert // Pass alert flag here
             ));
         }
 
