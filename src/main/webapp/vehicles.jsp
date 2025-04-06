@@ -31,7 +31,7 @@
                         <td>
                             <a class="button" href="RegisterVehicle?action=delete&vehicleId=${v.id}"
                                onclick="return confirm('Are you sure you want to delete this vehicle?');">Delete</a>
-                            <a class="button" href="gpsList.jsp?vehicleId=${v.id}">View GPS Data</a>
+                            <!--<a class="button" href="gpsList.jsp?vehicleId=${v.id}">View GPS Data</a>-->
                         </td>
                     </tr>
                 </c:forEach>
