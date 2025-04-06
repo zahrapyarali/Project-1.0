@@ -17,10 +17,15 @@
             %>
             <h1>Welcome, <%= user.getName()%>!</h1>
             <p>Your role: <%= user.getRole()%></p>
+
             <div class="link">
                 <a href="vehicles.jsp">Manage Vehicles</a> |
                 <a href="report.jsp">View Reports</a> |
-                <form action="logout" method="get" style="display:inline;"><button type="submit">Logout</button></form>
+                <a href="logGps.jsp">Log GPS Location</a> |
+                <a href="gpsReport.jsp">View GPS Logs</a> |
+                <form action="logout" method="get" style="display:inline;">
+                    <button type="submit">Logout</button>
+                </form>
             </div>
         </div>
     </body>

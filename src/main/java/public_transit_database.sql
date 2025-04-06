@@ -42,4 +42,23 @@ CREATE TABLE IF NOT EXISTS vehicles (
         (vehicleType = 'Diesel-Electric Train' AND maxPassengers BETWEEN 100 AND 500)
     )
 );
+
+INSERT INTO vehicles (vehicleType, vehicleNumber, fuelType, maxPassengers, assignedRoute, lastMaintenanceDate, nextMaintenanceDate)
+VALUES 
+('Diesel Bus', 'DB1234', 'Diesel', 40, 'Route 1', '2024-12-01', '2025-06-01'),
+('Electric Light Rail', 'ELR5678', 'Electric', 120, 'Route 2', '2025-01-15', '2025-07-15');
+
+-- Create gps_data table to store GPS logs
+CREATE TABLE IF NOT EXISTS gps_data (
+    tracking_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    location VARCHAR(255),
+    timestamp DATETIME,
+    status ENUM('Arrival', 'Departure'), 
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicleId)
+);
+
+--ALTER TABLE gps_data ADD COLUMN status ENUM('Arrival', 'Departure');
+
 INSERT INTO user (name, email, password, role) VALUES ("Ambika","ambika@example.com", "ambika", "Manager");
+
