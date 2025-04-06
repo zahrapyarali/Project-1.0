@@ -16,7 +16,7 @@ public class UserService {
 
     public UserService() throws SQLException {
     // Set database credentials before establishing the connection
-    DataSource.getInstance().setCredentials("your-username", "your-password");
+    DataSource.getInstance().setCredentials("cst8288", "cst8288");
 
     // Get the connection from the DataSource
     try (Connection conn = DataSource.getInstance().createConnection()) {

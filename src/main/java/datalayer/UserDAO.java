@@ -115,4 +115,54 @@ public class UserDAO implements DAO<User> {
         }
         return null;
     }
+    
+        /**
+     * Checks if the given email is unique in the database.
+     * 
+     * @param email The email to check.
+     * @return {@code true} if the email is unique, {@code false} if the email already exists.
+     * @throws SQLException If there is an error while interacting with the database.
+     */    
+    public boolean isEmailUnique(String email) throws SQLException {
+        String query = "SELECT COUNT(*) FROM users WHERE email = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) == 0; // If count == 0, email is unique
+        }
+    }
+    
+    
+    /**
+     * Logs in a user by checking the email and password.
+     * If a user with the given email exists and the password matches, the user is returned.
+     * The role is retrieved from the database and converted into an enum value.
+     * 
+     * @param email The email of the user trying to log in.
+     * @param password The password of the user trying to log in.
+     * @return A {@code User} object if the email and password match, {@code null} otherwise.
+     * @throws SQLException If there is an error while interacting with the database.
+     */
+    public User loginUser(String email, String password) throws SQLException {
+        String query = "SELECT id, name, email, password, role FROM user WHERE email = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("role")
+                );
+            }
+        } catch (IllegalArgumentException e) {
+            // If the role in the database is not "MANAGER" or "OPERATOR", throw an exception
+            throw new SQLException("Invalid role in database: " + e.getMessage());
+        }
+        return null; // User not found or password incorrect
+    }    
 }

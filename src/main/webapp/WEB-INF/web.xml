@@ -10,7 +10,11 @@
         <session-timeout>30</session-timeout>
     </session-config>
 
+
     <!-- Login Servlet -->
+
+
+
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>presentationlayer.LoginServlet</servlet-class>
@@ -20,7 +24,9 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
+
     <!-- Register Servlet -->
+
     <servlet>
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>presentationlayer.RegisterServlet</servlet-class>
@@ -30,7 +36,9 @@
         <url-pattern>/register</url-pattern>
     </servlet-mapping>
 
+
     <!-- Register Vehicle Servlet -->
+
     <servlet>
         <servlet-name>RegisterVehicleServlet</servlet-name>
         <servlet-class>presentationlayer.RegisterVehicleServlet</servlet-class>
@@ -39,6 +47,7 @@
         <servlet-name>RegisterVehicleServlet</servlet-name>
         <url-pattern>/RegisterVehicle</url-pattern>
     </servlet-mapping>
+
 
     <!-- GPS Tracker Servlet (for logGps.jsp) -->
     <servlet>
@@ -66,3 +75,10 @@
     </welcome-file-list>
 
 </web-app>
+    
+    <welcome-file-list>
+        <welcome-file>login.html</welcome-file>
+    </welcome-file-list>
+    
+</web-app>
+
