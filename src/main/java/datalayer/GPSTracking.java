@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 /**
  * Represents a GPS tracking record for a vehicle.
  * Stores details like vehicle ID, location, timestamp, and status.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class GPSTracking {
     private int trackingId;

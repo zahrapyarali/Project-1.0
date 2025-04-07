@@ -11,6 +11,8 @@ import java.util.List;
 /**
  * Factory class to create Data Access Objects (DAO).
  * Implements MaintenanceSubject to notify observers of maintenance updates.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class DAOFactory implements MaintenanceSubject {
 

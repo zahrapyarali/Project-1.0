@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 /**
  * Represents a break log entry for vehicle operations.
  * Used to track when a vehicle or operator reports a break status.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class BreakLog {
 

@@ -7,6 +7,8 @@ import java.sql.SQLException;
 /**
  * Singleton class to manage database connections.
  * Encapsulates JDBC connection creation and credentials handling.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class DataSource {
 

@@ -7,6 +7,8 @@ import java.util.*;
 /**
  * UserDAO class implements data access operations for User entity.
  * Provides methods to perform CRUD operations and user-specific queries.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class UserDAO implements DAO<User> {
 

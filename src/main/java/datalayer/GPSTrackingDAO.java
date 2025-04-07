@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 /**
  * Data Access Object (DAO) for managing GPS tracking records in the database.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class GPSTrackingDAO {
 

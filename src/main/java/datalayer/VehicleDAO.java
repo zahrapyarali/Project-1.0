@@ -7,6 +7,8 @@ import java.util.*;
 /**
  * Data Access Object (DAO) implementation for Vehicle entity.
  * Provides methods to perform CRUD operations on the vehicles table.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class VehicleDAO implements DAO<Vehicle> {
     private Connection conn;

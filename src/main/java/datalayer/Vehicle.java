@@ -3,6 +3,8 @@ package datalayer;
 /**
  * Represents a Vehicle entity in the system.
  * Contains details about vehicle type, number, fuel type, capacity, assigned route, and manager responsible.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class Vehicle {
     private int id;

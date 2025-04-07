@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 /**
  * Represents a log entry for a vehicle at a station,
  * capturing details like vehicle ID, location, arrival time, and departure time.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class VehicleStationLog {
     /** The unique identifier of the vehicle. */

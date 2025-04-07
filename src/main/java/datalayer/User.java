@@ -2,6 +2,8 @@ package datalayer;
 
 /**
  * Represents a User entity with user details such as id, name, email, password, and role.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class User {
     private int userId;

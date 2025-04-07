@@ -10,6 +10,8 @@ import java.util.Map;
 /**
  * Data Access Object (DAO) for managing break logs in the database.
  * Handles operations such as saving, retrieving, and logging operator breaks and statuses.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class BreakLogDAO {
 

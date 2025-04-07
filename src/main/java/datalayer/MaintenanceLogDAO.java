@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * DAO for interacting with the maintenance_logs table.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
  */
 public class MaintenanceLogDAO {
 
