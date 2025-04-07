@@ -3,7 +3,9 @@ package datalayer;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BreakLogDAO {
 
@@ -102,17 +104,36 @@ public class BreakLogDAO {
         return breakLogs;
     }
     // Log Out-of-Service as a separate entry
-public void logOutOfService(int operatorId, int vehicleId, LocalDateTime time) {
-    String sql = "INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES (?, ?, 'Out-of-Service', ?)";
-    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, operatorId);
-        stmt.setInt(2, vehicleId);
-        stmt.setTimestamp(3, Timestamp.valueOf(time));
-        stmt.executeUpdate();
-    } catch (SQLException e) {
-        System.err.println("Error logging out-of-service: " + e.getMessage());
-        e.printStackTrace();
+    public void logOutOfService(int operatorId, int vehicleId, LocalDateTime time) {
+        String sql = "INSERT INTO break_logs (operator_id, vehicle_id, status, timestamp) VALUES (?, ?, 'Out-of-Service', ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, operatorId);
+            stmt.setInt(2, vehicleId);
+            stmt.setTimestamp(3, Timestamp.valueOf(time));
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error logging out-of-service: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-}
+    public Map<Integer, Integer> getStatusCount(String status) {
+        Map<Integer, Integer> statusCount = new HashMap<>();
+        String sql = "SELECT operator_id, COUNT(*) AS count FROM break_logs WHERE status = ? GROUP BY operator_id";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, status);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int operatorId = rs.getInt("operator_id");
+                int count = rs.getInt("count");
+                statusCount.put(operatorId, count);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return statusCount;
+    }
+
 
 }
