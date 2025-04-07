@@ -8,22 +8,42 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Factory class to create Data Access Objects (DAO).
+ * Implements MaintenanceSubject to notify observers of maintenance updates.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
+ */
 public class DAOFactory implements MaintenanceSubject {
 
     private List<MaintenanceObserver> observers;
 
-    // Default constructor - connection is now fetched from DataSource
+    /**
+     * Default constructor.
+     * Initializes the list of observers.
+     */
     public DAOFactory() {
         observers = new ArrayList<>();
     }
 
-    // Method to get the database connection using DataSource
+    /**
+     * Retrieves a database connection from the DataSource.
+     *
+     * @return a new {@link Connection} object.
+     * @throws SQLException if a database access error occurs.
+     */
     private Connection getConnection() throws SQLException {
         // Retrieve connection from DataSource
         return DataSource.getInstance().createConnection();
     }
 
-    // Factory method to return the appropriate DAO
+    /**
+     * Factory method to obtain a specific DAO implementation based on the type.
+     *
+     * @param type the type of DAO required ("vehicle" or "user").
+     * @return an instance of {@link DAO} for the specified type.
+     * @throws RuntimeException if an unknown DAO type is requested or a connection error occurs.
+     */
     public DAO getDAO(String type) {
         try (Connection conn = getConnection()) {  // Automatically close connection after use
             switch (type.toLowerCase()) {
@@ -39,17 +59,29 @@ public class DAOFactory implements MaintenanceSubject {
         }
     }
 
-    // Observer Pattern Methods (Unchanged)
+    /**
+     * Attaches an observer to the list of maintenance observers.
+     *
+     * @param observer the {@link MaintenanceObserver} to attach.
+     */
     @Override
     public void attach(MaintenanceObserver observer) {
         observers.add(observer);
     }
 
+    /**
+     * Detaches an observer from the list of maintenance observers.
+     *
+     * @param observer the {@link MaintenanceObserver} to detach.
+     */
     @Override
     public void detach(MaintenanceObserver observer) {
         observers.remove(observer);
     }
 
+    /**
+     * Notifies all attached observers with a sample wear level.
+     */
     @Override
     public void notifyObservers() {
         for (MaintenanceObserver observer : observers) {
@@ -57,6 +89,11 @@ public class DAOFactory implements MaintenanceSubject {
         }
     }
 
+    /**
+     * Updates the wear level and notifies all observers.
+     *
+     * @param level the new wear level to update.
+     */
     public void updateWear(double level) {
         System.out.println("Updating wear level: " + level);
         notifyObservers();

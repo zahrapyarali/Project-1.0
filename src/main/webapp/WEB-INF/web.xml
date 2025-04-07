@@ -70,7 +70,15 @@
         <servlet-name>GPSReporterServlet</servlet-name>
         <url-pattern>/GPSReporterServlet</url-pattern>
     </servlet-mapping>
-
+    
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>presentationlayer.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
 
  <!--BreakLog Servlet  -->
 <servlet>

@@ -1,13 +1,6 @@
-/* File: VehicleFactory.java
- * Author: Ambika, Saleha, Sarra, Zahra
- * Date: 04-06-2025
- * Description: This class implements a Simple Factory pattern to create Vehicle
- *              instances based on input parameters. It centralizes vehicle creation
- *              logic to ensure consistency and modularity in the application.
- */
-
 package businesslayer;
 
+import businesslayer.strategies.*;
 import datalayer.Vehicle;
 
 /**
@@ -38,7 +31,25 @@ public class VehicleFactory {
         vehicle.setFuelType(fuelType);
         vehicle.setMaxPassengers(maxPassengers);
         vehicle.setCurrentAssignedRoute(currentAssignedRoute);
-
         return vehicle;
+    }
+
+    /**
+     * Returns the fuel consumption strategy for the given vehicle type.
+     *
+     * @param vehicleType the type of vehicle
+     * @return a FuelConsumptionStrategy implementation
+     */
+    public static FuelConsumptionStrategy getStrategy(String vehicleType) {
+        switch (vehicleType) {
+            case "Diesel Bus":
+                return new DieselBusStrategy();
+            case "Electric Light Rail":
+                return new ElectricRailStrategy();
+            case "Diesel-Electric Train":
+                return new DieselElectricTrainStrategy();
+            default:
+                throw new IllegalArgumentException("Unknown vehicle type: " + vehicleType);
+        }
     }
 }
