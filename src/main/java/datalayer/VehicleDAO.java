@@ -4,13 +4,27 @@ import businesslayer.DAO;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Data Access Object (DAO) implementation for Vehicle entity.
+ * Provides methods to perform CRUD operations on the vehicles table.
+ */
 public class VehicleDAO implements DAO<Vehicle> {
     private Connection conn;
 
+    /**
+     * Constructor to initialize VehicleDAO with a database connection.
+     *
+     * @param conn the database connection
+     */
     public VehicleDAO(Connection conn) {
         this.conn = conn;
     }
 
+    /**
+     * Inserts a new Vehicle record into the vehicles table.
+     *
+     * @param vehicle the Vehicle object to insert
+     */
     @Override
     public void insert(Vehicle vehicle) {
         String sql = "INSERT INTO vehicles (vehicleType, vehicleNumber, fuelType, maxPassengers, assignedRoute, manager_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -27,6 +41,11 @@ public class VehicleDAO implements DAO<Vehicle> {
         }
     }
 
+    /**
+     * Updates an existing Vehicle record in the vehicles table.
+     *
+     * @param vehicle the Vehicle object with updated details
+     */
     @Override
     public void update(Vehicle vehicle) {
         String sql = "UPDATE vehicles SET vehicleType=?, vehicleNumber=?, fuelType=?, maxPassengers=?, assignedRoute=?, manager_id=? WHERE vehicleId=?";
@@ -44,6 +63,11 @@ public class VehicleDAO implements DAO<Vehicle> {
         }
     }
 
+    /**
+     * Deletes a Vehicle record and its associated data from related tables.
+     *
+     * @param id the vehicle ID to delete
+     */
     @Override
     public void delete(int id) {
         String sql_vehicles         = "DELETE FROM vehicles WHERE vehicleId=?";
@@ -80,6 +104,12 @@ public class VehicleDAO implements DAO<Vehicle> {
         }        
     }
 
+    /**
+     * Finds a Vehicle by its ID.
+     *
+     * @param id the vehicle ID to search for
+     * @return the Vehicle object if found, otherwise null
+     */
     @Override
     public Vehicle findById(int id) {
         String sql = "SELECT * FROM vehicles WHERE vehicleId=?";
@@ -103,6 +133,11 @@ public class VehicleDAO implements DAO<Vehicle> {
         return null;
     }
 
+    /**
+     * Retrieves all Vehicle records from the vehicles table.
+     *
+     * @return a list of all Vehicle objects
+     */
     @Override
     public List<Vehicle> findAll() {
         List<Vehicle> vehicles = new ArrayList<>();

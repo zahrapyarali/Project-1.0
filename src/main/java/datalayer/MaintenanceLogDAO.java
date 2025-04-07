@@ -12,12 +12,19 @@ public class MaintenanceLogDAO {
 
     private final Connection conn;
 
+    /**
+     * Constructs a MaintenanceLogDAO with a database connection.
+     *
+     * @param conn the database connection to be used by this DAO
+     */
     public MaintenanceLogDAO(Connection conn) {
         this.conn = conn;
     }
 
     /**
      * Inserts a new maintenance log entry into the database.
+     *
+     * @param log the MaintenanceLog object containing log details to be saved
      */
     public void save(MaintenanceLog log) {
         String sql = "INSERT INTO maintenance_logs (vehicle_id, component, hours_used, threshold) VALUES (?, ?, ?, ?)";
@@ -34,6 +41,8 @@ public class MaintenanceLogDAO {
 
     /**
      * Retrieves all maintenance logs from the database.
+     *
+     * @return a list of all MaintenanceLog entries
      */
     public List<MaintenanceLog> findAll() {
         List<MaintenanceLog> logs = new ArrayList<>();
@@ -60,7 +69,10 @@ public class MaintenanceLogDAO {
     }
 
     /**
-     * Returns only the logs where wear exceeds the threshold (used for triggering alerts).
+     * Retrieves maintenance logs where the usage hours exceed or meet the threshold.
+     * Useful for identifying components that require immediate attention.
+     *
+     * @return a list of MaintenanceLog entries exceeding their usage threshold
      */
     public List<MaintenanceLog> findOverdueAlerts() {
         List<MaintenanceLog> alerts = new ArrayList<>();
@@ -85,7 +97,12 @@ public class MaintenanceLogDAO {
         }
         return alerts;
     }
-    
+
+    /**
+     * Updates the maintenance log entry to mark it as scheduled for maintenance.
+     *
+     * @param logId the ID of the maintenance log to be updated
+     */
     public void scheduleMaintenance(int logId) {
         String sql = "UPDATE maintenance_logs SET is_scheduled = true WHERE log_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {

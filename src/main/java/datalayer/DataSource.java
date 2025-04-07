@@ -10,14 +10,26 @@ import java.sql.SQLException;
  */
 public class DataSource {
 
-    // Singleton instance of DataSource
+    /**
+     * Singleton instance of DataSource.
+     */
     private static DataSource instance;
 
-    // JDBC URL for the MySQL database
+    /**
+     * JDBC URL for the MySQL database.
+     */
     private final String url = "jdbc:mysql://localhost:3306/public_transit_db";
                              
-    // Database credentials
-    private String user, password;
+    /**
+     * Database username.
+     */
+    private String user;
+
+    /**
+     * Database password.
+     */
+    private String password;
+
     /**
      * Private constructor to prevent direct instantiation.
      * Use getInstance() to obtain the singleton object.
@@ -53,16 +65,17 @@ public class DataSource {
 
     /**
      * Creates a new database connection using the stored credentials.
+     * Loads the MySQL JDBC driver and establishes a connection.
      *
      * @return a new Connection object
      * @throws SQLException if a database access error occurs
      */
     public Connection createConnection() throws SQLException {
         try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-    } catch (ClassNotFoundException e) {
-        e.printStackTrace();
-    }     
-    return DriverManager.getConnection(url, user, password);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return DriverManager.getConnection(url, user, password);
     }
 }
