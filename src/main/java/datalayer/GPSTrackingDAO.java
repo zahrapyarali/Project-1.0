@@ -148,4 +148,32 @@ public class GPSTrackingDAO {
             e.printStackTrace();
         }
     }
+    public double calculateTotalDistance(int vehicleId) {
+        double total = 0;
+        String sql = "SELECT timestamp, status FROM gps_data WHERE vehicle_id = ? ORDER BY timestamp";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, vehicleId);
+            ResultSet rs = stmt.executeQuery();
+
+            LocalDateTime departTime = null;
+
+            while (rs.next()) {
+                String status = rs.getString("status");
+                LocalDateTime time = rs.getTimestamp("timestamp").toLocalDateTime();
+
+                if ("Departure".equalsIgnoreCase(status)) {
+                    departTime = time;
+                } else if ("Arrival".equalsIgnoreCase(status) && departTime != null) {
+                    long minutes = java.time.Duration.between(departTime, time).toMinutes();
+                    total += minutes; // Treat minutes as "distance" for reporting
+                    departTime = null;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
 }

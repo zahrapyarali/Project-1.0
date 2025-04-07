@@ -1,71 +1,120 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page import="businesslayer.VehicleFactory"%>
+<%@page import="businesslayer.FuelConsumptionStrategy"%>
+<%@page import="businesslayer.MaintenanceLog"%>
+<%@page import="businesslayer.strategies.*" %>
+<%@page import="datalayer.*" %>
+<%@page import="java.util.*" %>
+<%@page import="java.text.DecimalFormat" %>
+<%@page import="java.sql.Connection" %>
+<%@page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Vehicle Control Reports</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div class="container">
-            <h2>Report & Analytic</h2>
+<html>
+<head>
+    <title>Transit Reports</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Transit Reports</h1>
 
-            <h3>Average Energy Usage per Vehicle</h3>
-            <table>
-                <tr>
-                    <th>Vehicle ID</th>
-                    <th>Average Usage</th>
-                </tr>
-                <c:forEach var="entry" items="${avgUsageMap}">
-                    <tr>
-                        <td>${entry.key}</td>
-                        <td>${entry.value}</td>
-                    </tr>
-                </c:forEach>
-            </table>
+    <!-- Maintenance Dashboard -->
+    <h2>Maintenance Dashboard</h2>
+    <table class="report-table">
+        <tr>
+            <th>Vehicle ID</th>
+            <th>Component</th>
+            <th>Hours Used</th>
+            <th>Threshold</th>
+            <th>Status</th>
+        </tr>
+        <%
+            Connection conn = DataSource.getInstance().createConnection();
+            MaintenanceLogDAO maintenanceDAO = new MaintenanceLogDAO(conn);
+            List<MaintenanceLog> maintenanceLogs = maintenanceDAO.findAll();
+            for (MaintenanceLog log : maintenanceLogs) {
+                boolean exceeded = log.getHoursUsed() >= log.getThreshold();
+        %>
+        <tr>
+            <td><%= log.getVehicleId() %></td>
+            <td><%= log.getComponent() %></td>
+            <td><%= log.getHoursUsed() %></td>
+            <td><%= log.getThreshold() %></td>
+            <td style="color: <%= exceeded ? "red" : "green" %>;">
+                <%= exceeded ? "Needs Maintenance" : "OK" %>
+            </td>
+        </tr>
+        <% } %>
+    </table>
 
-            <h3>Total Usage by Energy Type</h3>
-            <table>
-                <tr>
-                    <th>Energy Type</th>
-                    <th>Total Consumption</th>
-                </tr>
-                <c:forEach var="entry" items="${typeTotals}">
-                    <tr>
-                        <td>${entry.key}</td>
-                        <td>${entry.value}</td>
-                    </tr>
-                </c:forEach>
-            </table>
+    <!-- Operator Performance Dashboard -->
+    <h2>Operator Performance Dashboard</h2>
+    <table class="report-table">
+        <tr>
+            <th>Operator ID</th>
+            <th>Breaks Logged</th>
+            <th>Out-of-Service Logs</th>
+            <th>Total Logged Events</th>
+        </tr>
+        <%
+            BreakLogDAO breakDAO = new BreakLogDAO(conn);
+            Map<Integer, Integer> breakCounts = breakDAO.getStatusCount("Check-In");
+            Map<Integer, Integer> oosCounts = breakDAO.getStatusCount("Out-of-Service");
 
-            <h3>Maintenance Tasks</h3>
-            <p>Pending tasks: ${pendingCount}</p>
-            <table>
-                <tr>
-                    <th>Alert ID</th>
-                    <th>Vehicle ID</th>
-                    <th>Message</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                </tr>
-                <c:forEach var="task" items="${taskList}">
-                    <tr>
-                        <td>${task.taskId}</td>
-                        <td>${task.vehicleId}</td>
-                        <td>${task.alertMessage}</td>
-                        <td>${task.alertTime}</td>
-                        <td><c:choose>
-                                <c:when test="${task.completed}">Completed</c:when>
-                                <c:otherwise>Pending</c:otherwise>
-                            </c:choose></td>
-                    </tr>
-                </c:forEach>
-            </table>
+            Set<Integer> allOperators = new HashSet<>();
+            allOperators.addAll(breakCounts.keySet());
+            allOperators.addAll(oosCounts.keySet());
 
-            <div class="link">
-                <a href="dashboard.jsp">Back to Dashboard</a>
-            </div>
-        </div>
-    </body>
+            for (Integer operatorId : allOperators) {
+                int breaks = breakCounts.getOrDefault(operatorId, 0);
+                int outOfService = oosCounts.getOrDefault(operatorId, 0);
+        %>
+        <tr>
+            <td><%= operatorId %></td>
+            <td><%= breaks %></td>
+            <td><%= outOfService %></td>
+            <td><%= breaks + outOfService %></td>
+        </tr>
+        <% } %>
+    </table>
+
+    <!-- Fuel & Maintenance Cost Report -->
+    <h2>Fuel & Maintenance Cost Report</h2>
+    <table class="report-table">
+        <tr>
+            <th>Vehicle ID</th>
+            <th>Fuel Type</th>
+            <th>Distance Traveled (km)</th>
+            <th>Fuel Used (Litres/kWh)</th>
+        </tr>
+        <%
+            VehicleDAO vehicleDAO = new VehicleDAO(conn);
+            GPSTrackingDAO gpsDAO = new GPSTrackingDAO(conn);
+            List<Vehicle> vehicles = vehicleDAO.findAll();
+            DecimalFormat df = new DecimalFormat("0.00");
+
+            for (Vehicle v : vehicles) {
+                double distance = gpsDAO.calculateTotalDistance(v.getId());
+
+                FuelConsumptionStrategy strategy = null;
+                try {
+                    strategy = VehicleFactory.getStrategy(v.getType());
+                } catch (Exception e) {
+                    strategy = null;
+                }
+
+                double used = (strategy != null) ? strategy.calculateConsumption(distance) : 0;
+        %>
+        <tr>
+            <td><%= v.getId() %></td>
+            <td><%= v.getFuelType() %></td>
+            <td><%= df.format(distance) %></td>
+            <td><%= df.format(used) %></td>
+        </tr>
+        <% } %>
+    </table>
+
+    <br>
+    <a href="dashboard.jsp">&larr; Back to Dashboard</a>
+</div>
+</body>
 </html>

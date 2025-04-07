@@ -92,3 +92,18 @@ th, td {
 th {
     background-color: #f5f7fa;
 }
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.report-table th, .report-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+.report-table th {
+    background-color: #f2f2f2;
+}
