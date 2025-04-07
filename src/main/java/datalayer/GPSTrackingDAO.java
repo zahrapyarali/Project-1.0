@@ -5,14 +5,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
 
+/**
+ * Data Access Object (DAO) for managing GPS tracking records in the database.
+ * 
+ * @author Ambika Gadhvi, Saleha Qareen, Sarra Derdar, Zahra Pyarali
+ */
 public class GPSTrackingDAO {
 
     private Connection conn;
 
+    /**
+     * Constructor to initialize the DAO with a database connection.
+     * @param conn the database connection
+     */
     public GPSTrackingDAO(Connection conn) {
         this.conn = conn;
     }
-     public void insertTracking(GPSTracking gps) throws SQLException {
+
+    /**
+     * Inserts a new GPS tracking record into the database.
+     * @param gps the GPS tracking data to insert
+     * @throws SQLException if a database access error occurs
+     */
+    public void insertTracking(GPSTracking gps) throws SQLException {
         String sql = "INSERT INTO gps_data (vehicle_id, location, timestamp, status) VALUES (?, ?, ?, ?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, gps.getVehicleId());
@@ -21,9 +36,12 @@ public class GPSTrackingDAO {
         stmt.setString(4, gps.getStatus());
         stmt.executeUpdate();
         stmt.close();
-     }
+    }
 
-    // Save a new GPS tracking record
+    /**
+     * Saves a new GPS tracking record in the database.
+     * @param gpsTracking the GPS tracking data to save
+     */
     public void save(GPSTracking gpsTracking) {
         String sql = "INSERT INTO gps_data (vehicle_id, location, timestamp, status) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -37,7 +55,11 @@ public class GPSTrackingDAO {
         }
     }
 
-    // Find a GPS tracking record by its ID
+    /**
+     * Finds a GPS tracking record by its tracking ID.
+     * @param id the tracking ID
+     * @return the GPS tracking record, or null if not found
+     */
     public GPSTracking findById(int id) {
         String sql = "SELECT * FROM gps_data WHERE tracking_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -58,7 +80,10 @@ public class GPSTrackingDAO {
         return null;
     }
 
-    // Find all GPS tracking records
+    /**
+     * Retrieves all GPS tracking records from the database.
+     * @return a list of all GPS tracking records
+     */
     public List<GPSTracking> findAll() {
         List<GPSTracking> gpsTrackings = new ArrayList<>();
         String sql = "SELECT * FROM gps_data";
@@ -79,7 +104,11 @@ public class GPSTrackingDAO {
         return gpsTrackings;
     }
 
-    // Find GPS tracking records for a specific vehicle ID
+    /**
+     * Retrieves GPS tracking records for a specific vehicle ID.
+     * @param vehicleId the vehicle ID
+     * @return a list of GPS tracking records for the specified vehicle
+     */
     public List<GPSTracking> findByVehicleId(int vehicleId) {
         List<GPSTracking> gpsTrackings = new ArrayList<>();
         String sql = "SELECT * FROM gps_data WHERE vehicle_id = ? ORDER BY timestamp DESC";
@@ -101,7 +130,10 @@ public class GPSTrackingDAO {
         return gpsTrackings;
     }
 
-    // Delete a GPS tracking record by its ID
+    /**
+     * Deletes a GPS tracking record by its tracking ID.
+     * @param id the tracking ID of the record to delete
+     */
     public void deleteById(int id) {
         String sql = "DELETE FROM gps_data WHERE tracking_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -112,7 +144,10 @@ public class GPSTrackingDAO {
         }
     }
 
-    // Get arrival and departure logs for each vehicle and location
+    /**
+     * Retrieves arrival and departure logs for each vehicle and location.
+     * @return a list of vehicle station logs with arrival and departure times
+     */
     public List<VehicleStationLog> getArrivalDepartureLogs() {
         List<VehicleStationLog> logs = new ArrayList<>();
         String sql = "SELECT vehicle_id, location, " +
@@ -134,7 +169,10 @@ public class GPSTrackingDAO {
         return logs;
     }
 
-    // Update a GPS tracking record
+    /**
+     * Updates an existing GPS tracking record in the database.
+     * @param gpsTracking the GPS tracking record to update
+     */
     public void update(GPSTracking gpsTracking) {
         String sql = "UPDATE gps_data SET vehicle_id = ?, location = ?, timestamp = ?, status = ? WHERE tracking_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
