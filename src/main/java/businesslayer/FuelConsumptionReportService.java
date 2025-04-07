@@ -1,3 +1,12 @@
+/* File: FuelConsumptionReportService.java
+ * Author: Ambika, Saleha, Sarra, Zahra
+ * Date: 04-06-2025
+ * Description: This service class generates fuel or energy usage reports 
+ *              for different public transit vehicles. It calculates estimated 
+ *              consumption using the appropriate strategy pattern implementation 
+ *              and compares it with predefined thresholds to flag alerts.
+ */
+
 package businesslayer;
 
 import datalayer.GPSTracking;
@@ -12,23 +21,36 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Service class to generate fuel/energy consumption reports
- * for different types of public transit vehicles.
+ * The {@code FuelConsumptionReportService} class is responsible for generating
+ * fuel and energy usage reports for all vehicles in the system.
+ *
+ * <p>It uses the {@link FuelConsumptionStrategy} design pattern to apply
+ * different consumption calculations based on the vehicle type.
+ * The service also estimates distance from GPS logs and determines if
+ * an alert should be raised based on consumption thresholds.
+ * 
  */
 public class FuelConsumptionReportService {
 
     private final VehicleDAO vehicleDAO;
     private final GPSTrackingDAO gpsTrackingDAO;
 
+    /**
+     * Constructs the report service with DAOs for vehicle and GPS data.
+     *
+     * @param conn the active database connection
+     */
     public FuelConsumptionReportService(Connection conn) {
         this.vehicleDAO = new VehicleDAO(conn);
         this.gpsTrackingDAO = new GPSTrackingDAO(conn);
     }
 
     /**
-     * Generates a fuel/energy usage report for all vehicles.
+     * Generates a fuel or energy usage report for all vehicles.
+     * Uses departure/arrival timestamps to estimate distances, applies
+     * the appropriate fuel strategy, and flags overconsumption alerts.
      *
-     * @return List of FuelReportEntry containing usage stats
+     * @return a list of {@code FuelReportEntry} containing the vehicle report data
      */
     public List<FuelReportEntry> generateReport() {
         List<FuelReportEntry> report = new ArrayList<>();
@@ -85,7 +107,7 @@ public class FuelConsumptionReportService {
                     v.getNumber(),
                     totalDistance,
                     consumption,
-                    alert // Pass alert flag here
+                    alert
             ));
         }
 
